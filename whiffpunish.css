@@ -24,6 +24,11 @@
 	display: inline-block; /* makes them block elements, so the padding applies vertically */
 }
 
+.nav li a:active 
+{
+    color: red;
+}
+
 .nav li a:hover 
 {
 	background-color: #111;
@@ -40,4 +45,9 @@
 #vnav li
 {
 	display: block; /* makes vertical (for the sake of the week 9 assignment, I don't really want a vertical navbar on my site) */
+}
+
+p
+{
+	text-align: center;
 }
