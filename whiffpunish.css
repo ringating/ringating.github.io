@@ -1,7 +1,8 @@
 body 
 {
   font-family: Sans-Serif;
-  background-color: #BBB;
+  background-color: white;
+  color: #333;
 }
 
 .nav
