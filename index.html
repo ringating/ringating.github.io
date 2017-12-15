@@ -6,6 +6,21 @@
 		<title>Hello World</title>
 		<meta name="description" content="contact form">
 		<link rel="stylesheet" type="text/css" href="whiffpunish.css">
+		
+		<!-- jQuery install, for Colorbox -->
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+		
+		<!-- Colorbox install -->
+		<script src="js/jquery.colorbox-min.js"></script>
+		
+		<!-- making a slideshow via colorbox -->
+		<script>
+			$(document).ready(function() 
+			{
+				$(".doki").colorbox({ rel:'doki', transition:"none"});
+			});
+		</script>
+		
 	</head>
 	
 	<body>
@@ -21,11 +36,28 @@
 		
 		<br><br><br>
 		
-		<img style="display:block;margin:auto;" src="images/doki.png" alt="<3" width="400" height="400">
+		<p><img src="images/ChrisKisslerHeadshot.jpg" width="250" height="250"></p>
+		
 		
 		<br><br><br>
 		
+		<div id="doki" style="display:block;margin:auto;text-align:center;">
+			<a class="doki" href="images/doki.png">jQuery+Colorbox</a><br>
+			<a class="doki" href="images/dokidoki.png"></a>
+		</div>
+		
+		<br><br><br>
+		
+		<h2 style="text-align:center;">hi</h1>
+		
+		<p style="margin-left:25%; margin-right:25%; text-align:left;">
+			My name is <b>Chris Kissler</b>, and I'm a Computer Science/Computer Game Design major.  My aim is to get paid to make games I love playing.  I have experience with multiple programming languages, game engines, and multimedia editing tools.
+			<br>
+			<br>Take a look at my <a href="portfolio.html">portfolio</a> page to see some of the stuff I've made!
+		</p>
+		
 		<!-- <p>this will be an "about" page pretty soon</p> -->
+		<br><br><br>
 		
 	</body>
 	
