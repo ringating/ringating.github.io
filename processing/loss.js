@@ -2,7 +2,7 @@
 
 var baseDiameter = 41;
 var baseGap = 41;
-var minWidth = 0.06;
+var minWidth = 0.13;
 var deadzone = 20;
 var autoSpeedMax = 30;
 var autoSpeedMin = 2;
