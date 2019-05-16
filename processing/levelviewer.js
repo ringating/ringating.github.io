@@ -53,7 +53,7 @@ function draw()
 	{
 		canvasWidth = canvas.width;
 		canvasHeight = canvas.height;
-		console.log("in draw(), width="+canvasWidth+", height="+canvasHeight);
+		console.log("in draw(), canvasWidth="+canvasWidth+", canvasHeight="+canvasHeight);
 		
 		// ----- draw -----
 		
