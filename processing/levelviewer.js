@@ -17,6 +17,7 @@ function draw()
 {
 	if(canvasWidth != canvas.width || canvasHeight != canvas.height)
 	{
+		console.log("in draw()")
 		canvasWidth = canvas.width;
 		canvasHeight = canvas.height;
 		
