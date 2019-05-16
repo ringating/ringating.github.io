@@ -1,13 +1,18 @@
 var myp5 = new p5( function( sketch )
 {
-	var argStr = "";
-	var canvasWidth = 0;
-	var canvasHeight = 0;
-	var cellLength = 0;
-	var maxCanvasDimension = 800;
+	// options
+	var maxCanvasDimension = 1600;
+	var cellGap = 4;
+	
+	// variables
+	var argStr;
+	var argArr;
+	var lvl;
+	var numRows;
+	var numCols;
+	var cellLength;
 	var myCanvas;
 	var canvasElt;
-	var forceDraw = false;
 
 	function calcWidth()
 	{
@@ -42,27 +47,79 @@ var myp5 = new p5( function( sketch )
 		
 		console.log(myCanvas.width + " " + myCanvas.height);
 		
-		sketch.strokeWeight(2);
 		argStr = sketch.getURL();
 		argStr = argStr.slice(argStr.indexOf("?") + 1);
 		console.log("argStr = \"" + argStr + "\"");
+		argArr = argStr.split(',');
+		
+		numRows = argArr[0];
+		numCols = argArr[1];
+		
+		lvl = new Array(numRows);
+		for(let i = 0; i < numRows; ++i)
+		{
+			lvl[i] = new Array();
+		}
+		
+		for(let row = 0; row < numRows; ++row)
+		{
+			for(let col = 0; col < numCols; ++col)
+			{
+				lvl[row][col] = '1' === argArr[row+2].charAt(col);
+			}
+		}
 	}
 
 	function myDraw()
 	{
-		console.log("in draw(), canvasWidth="+canvasWidth+", canvasHeight="+canvasHeight);
-			
-		// ----- draw -----
+		sketch.strokeWeight(0);
+		sketch.background(60);
 		
+		//sketch.textAlign(sketch.CENTER, sketch.CENTER);
+		//sketch.textSize(60);
+		//sketch.text(argStr, myCanvas.width/2, myCanvas.height/2);
+		
+		// draw rectangle
+		var lvlWidth;
+		var lvlHeight;
+		if(numCols/numRows < myCanvas.width/myCanvas.height)
+		{
+			// height limited
+			lvlHeight = myCanvas.height;
+			lvlWidth = (numCols/numRows) * lvlHeight;
+		}
+		else
+		{
+			// width limited
+			lvlWidth = myCanvas.width;
+			lvlHeight = (numRows/numCols) * lvlWidth;			
+		}
 		sketch.fill(255);
-		sketch.background(0);
+		sketch.translate(myCanvas.width/2, myCanvas.height/2);
+		sketch.rectMode(sketch.CENTER);
+		sketch.rect(0, 0, lvlWidth, lvlHeight);
+		sketch.translate(-lvlWidth/2, -lvlHeight/2);
 		
-		sketch.textAlign(sketch.CENTER, sketch.CENTER);
-		sketch.textSize(60);
-		sketch.text(argStr, myCanvas.width/2, myCanvas.height/2);
+		//draw level
+		cellLength = lvlWidth / numCols;
+		sketch.rectMode(sketch.CORNER);
+		sketch.fill(0);
+		for(let row = 0; row < numRows; ++row)
+		{
+			for(let col = 0; col < numCols; ++col)
+			{
+				if(lvl[row][col])
+				{
+					sketch.rect(
+						col*cellLength+(cellGap/2),
+						row*cellLength+(cellGap/2),
+						cellLength-cellGap,
+						cellLength-cellGap
+					);
+				}
+			}
+		}
 		
-		//draw grid
-		// asdf
 	}
 
 	sketch.setup = function()
@@ -70,15 +127,6 @@ var myp5 = new p5( function( sketch )
 		mySetup();
 		myDraw();
 	}
-
-	/*function draw() 
-	{
-		if(canvasWidth != canvas.width || canvasHeight != canvas.height || forceDraw)
-		{
-			canvasWidth = canvas.width;
-			canvasHeight = canvas.height;
-		}
-	}*/
 
 	sketch.windowResized = function()
 	{
