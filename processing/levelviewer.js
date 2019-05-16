@@ -1,79 +1,91 @@
-var argStr = "";
-var canvasWidth = 0;
-var canvasHeight = 0;
-var cellLength = 0;
-var maxCanvasDimension = 800;
-var myCanvas;
-var canvasElt;
-var forceDraw = false;
-
-function calcWidth()
+var myp5 = new p5( function( sketch )
 {
-	if(windowWidth > windowHeight)
-	{
-		return maxCanvasDimension;
-	}
-	else
-	{
-		return (windowWidth/windowHeight)*maxCanvasDimension;
-	}
-}
+	var argStr = "";
+	var canvasWidth = 0;
+	var canvasHeight = 0;
+	var cellLength = 0;
+	var maxCanvasDimension = 800;
+	var myCanvas;
+	var canvasElt;
+	var forceDraw = false;
 
-function calcHeight()
-{
-	if(windowHeight > windowWidth)
+	function calcWidth()
 	{
-		return maxCanvasDimension;
+		if(sketch.windowWidth > sketch.windowHeight)
+		{
+			return maxCanvasDimension;
+		}
+		else
+		{
+			return (sketch.windowWidth/sketch.windowHeight)*maxCanvasDimension;
+		}
 	}
-	else
+
+	function calcHeight()
 	{
-		return (windowHeight/windowWidth)*maxCanvasDimension;
+		if(sketch.windowHeight > sketch.windowWidth)
+		{
+			return maxCanvasDimension;
+		}
+		else
+		{
+			return (sketch.windowHeight/sketch.windowWidth)*maxCanvasDimension;
+		}
 	}
-}
 
-function setup()
-{
-	myCanvas = createCanvas(calcWidth(), calcHeight());
-	canvasElt = myCanvas.elt;
-	canvasElt.style.width = '100%';
-	canvasElt.style.height = '100%';
-	
-	//createCanvas(windowWidth, windowHeight);
-	console.log(canvas.width + " " + canvas.height);
-	
-	strokeWeight(2);
-	argStr = getURL();
-	argStr = argStr.slice(argStr.indexOf("?") + 1);
-	console.log("argStr = \"" + argStr + "\"")
-}
-
-function draw() 
-{
-	if(canvasWidth != canvas.width || canvasHeight != canvas.height || forceDraw)
+	function mySetup()
 	{
-		canvasWidth = canvas.width;
-		canvasHeight = canvas.height;
-		console.log("in draw(), canvasWidth="+canvasWidth+", canvasHeight="+canvasHeight);
+		myCanvas = sketch.createCanvas(calcWidth(), calcHeight());
+		canvasElt = myCanvas.elt;
+		canvasElt.style.width = '100%';
+		canvasElt.style.height = '100%';
 		
+		console.log(myCanvas.width + " " + myCanvas.height);
+		
+		sketch.strokeWeight(2);
+		argStr = sketch.getURL();
+		argStr = argStr.slice(argStr.indexOf("?") + 1);
+		console.log("argStr = \"" + argStr + "\"");
+	}
+
+	function myDraw()
+	{
+		console.log("in draw(), canvasWidth="+canvasWidth+", canvasHeight="+canvasHeight);
+			
 		// ----- draw -----
 		
-		fill(255);
-		background(0);
+		sketch.fill(255);
+		sketch.background(0);
 		
-		textAlign(CENTER, CENTER);
-		textSize(60);
-		text(argStr, canvasWidth/2, canvasHeight/2);
+		sketch.textAlign(sketch.CENTER, sketch.CENTER);
+		sketch.textSize(60);
+		sketch.text(argStr, myCanvas.width/2, myCanvas.height/2);
 		
 		//draw grid
 		// asdf
-		
 	}
-}
 
-function windowResized()
-{
-	resizeCanvas(calcWidth(), calcHeight());
-	canvasElt.style.width = '100%';
-	canvasElt.style.height = '100%';
-	forceDraw = true;
-}
+	sketch.setup = function()
+	{
+		mySetup();
+		myDraw();
+	}
+
+	/*function draw() 
+	{
+		if(canvasWidth != canvas.width || canvasHeight != canvas.height || forceDraw)
+		{
+			canvasWidth = canvas.width;
+			canvasHeight = canvas.height;
+		}
+	}*/
+
+	sketch.windowResized = function()
+	{
+		sketch.resizeCanvas(calcWidth(), calcHeight());
+		canvasElt.style.width = '100%';
+		canvasElt.style.height = '100%';
+		myDraw();
+	}
+});
+
