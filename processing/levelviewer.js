@@ -11,10 +11,7 @@ function setup()
 	argStr = getURL();
 	argStr = argStr.slice(argStr.indexOf("?") + 1);
 	console.log("argStr = \"" + argStr + "\"")
-}
-
-function draw() 
-{
+	
 	if(canvasWidth != canvas.width || canvasHeight != canvas.height)
 	{
 		canvasWidth = canvas.width;
@@ -34,10 +31,33 @@ function draw()
 		// asdf
 		
 	}
+}
+
+function draw() 
+{
+	/*if(canvasWidth != canvas.width || canvasHeight != canvas.height)
+	{
+		canvasWidth = canvas.width;
+		canvasHeight = canvas.height;
+		console.log("in draw(), width="+canvasWidth+", height="+canvasHeight);
+		
+		// ----- draw -----
+		
+		fill(0);
+		background(255);
+		
+		textAlign(CENTER, CENTER);
+		textSize(60);
+		text(argStr, canvasWidth/2, canvasHeight/2);
+		
+		//draw grid
+		// asdf
+		
+	}*/
 	
 }
 
 function windowResized()
 {
-	resizeCanvas(windowWidth, windowHeight);
+	//resizeCanvas(windowWidth, windowHeight);
 }
