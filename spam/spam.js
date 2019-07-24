@@ -73,7 +73,7 @@ function setup()
 
 function draw() 
 {
-	if( !keyIsDown(SPACE) ){ return; }
+	if( !keyIsDown(32) ){ return; }
 	
 	for(let i = 0; i < imagesPerFrame; ++i)
 	{
