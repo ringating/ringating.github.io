@@ -13,6 +13,17 @@ var myp5 = new p5( function( sketch )
 	var cellLength;
 	var myCanvas;
 	var canvasElt;
+	
+	// game options, units are in cells
+	var playerDiameter = 1 / 1.61803398875; // ~0.618
+	var gravity = 9.8;
+	var jumpSpeed = 6;
+	var bounceScalar = 0.5;
+	
+	// game variables
+	var pRadius = playerDiameter / 2;
+	var xVel = 0;
+	var yVel = 0;
 
 	function calcWidth()
 	{
