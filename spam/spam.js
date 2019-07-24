@@ -48,18 +48,21 @@ var imageNames =
 "WutFace.png",
 ]
 var images;
+var testImage;
 
 console.log(imageNames);
 
 function preload()
 {
-	images = new Array(imageNames.length);
+	/*images = new Array(imageNames.length);
 	console.log(images);
 	for(let i = 0; i < images.length; ++i)
 	{
 		images[i] = loadImage(imageFolderName + "/" + imageNames[i]);
 		console.log(images[i]);
-	}
+	}*/
+	
+	testImage = loadImage("spam/images/PogU.png");
 }
 
 function setup()
@@ -73,5 +76,5 @@ function draw()
 {
 	//if( !keyIsDown(SPACE) ){ return; }
 	
-	image(images[0], 200, 200);
+	image(testImage, 200, 200);
 }
