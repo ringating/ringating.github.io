@@ -1,5 +1,5 @@
 // settings
-var imagesPerFrame = 1;
+var imagesPerFrame = 3;
 var maxFrameRate = 60;
 var bgRed   = 255;
 var bgGreen = 255;
@@ -73,7 +73,7 @@ function setup()
 
 function draw() 
 {
-	//if( !keyIsDown(SPACE) ){ return; }
+	if( !keyIsDown(SPACE) ){ return; }
 	
 	for(let i = 0; i < imagesPerFrame; ++i)
 	{
