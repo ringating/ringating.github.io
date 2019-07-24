@@ -6,8 +6,8 @@ var bgGreen = 255;
 var bgBlue  = 255;
 var canvasWidth = 1920;
 var canvasHeight = 1080;
-var imageWidth = 200;
-var imageHeight = 200;
+var imageLength = 200;
+var imageLengthVar = 60;
 
 // everything else
 
@@ -116,12 +116,13 @@ function randIntRange(min, max)
 
 function imageR(img, x, y)
 {
-	if(img.width/img.height > imageWidth/imageHeight)
+	var len = imageLength + randIntRange(-imageLengthVar, imageLengthVar);
+	if(img.width/img.height > 1)
 	{
-		image(img, x, y, imageWidth, (imageWidth/img.width)*img.height);
+		image(img, x, y, len, (len/img.width)*img.height);
 	}
 	else
 	{
-		image(img, x, y, (imageHeight/img.height)*img.width, imageHeight);
+		image(img, x, y, (len/img.height)*img.width, len);
 	}
 }
