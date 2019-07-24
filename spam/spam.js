@@ -10,7 +10,7 @@ var imageHeight = 200;
 
 // everything else
 
-var imageFolderName = "images";
+var imageFolderPath = "spam/images";
 var imageNames = 
 [
 "4head.png",
@@ -54,15 +54,13 @@ console.log(imageNames);
 
 function preload()
 {
-	/*images = new Array(imageNames.length);
+	images = new Array(imageNames.length);
 	console.log(images);
 	for(let i = 0; i < images.length; ++i)
 	{
-		images[i] = loadImage(imageFolderName + "/" + imageNames[i]);
+		images[i] = loadImage(imageFolderPath + "/" + imageNames[i]);
 		console.log(images[i]);
-	}*/
-	
-	testImage = loadImage("spam/images/PogU.png");
+	}
 }
 
 function setup()
