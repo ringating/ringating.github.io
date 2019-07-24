@@ -1,8 +1,9 @@
 // settings
+var imagesPerFrame = 1;
+var maxFrameRate = 60;
 var bgRed   = 255;
 var bgGreen = 255;
 var bgBlue  = 255;
-var maxFrameRate = 60;
 var canvasWidth = 1920;
 var canvasHeight = 1080;
 var imageWidth = 200;
@@ -67,14 +68,32 @@ function setup()
 {
 	frameRate(maxFrameRate);
 	createCanvas(canvasWidth, canvasHeight);
-	background(255);
+	background(bgRed, bgGreen, bgBlue);
 }
 
 function draw() 
 {
 	//if( !keyIsDown(SPACE) ){ return; }
 	
-	imageR(images[0], 200, 200);
+	for(let i = 0; i < imagesPerFrame; ++i)
+	{
+		imageR(
+			images[randInt(images.length)], 
+			randIntRange(-imageWidth, canvas.width + imageWidth), 
+			randIntRange(-imageHeight, canvas.height + imageHeight)
+		);
+	}
+	
+}
+
+function randInt(max)
+{
+	return Math.floor(Math.random() * Math.floor(max));
+}
+
+function randIntRange(min, max)
+{
+	return Math.floor(min + randInt(max-min));
 }
 
 function imageR(img, x, y)
