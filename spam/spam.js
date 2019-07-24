@@ -7,7 +7,7 @@ var bgBlue  = 255;
 var canvasWidth = 1920;
 var canvasHeight = 1080;
 var imageLength = 200;
-var imageLengthVar = 60;
+var imageLengthVar = 150;
 
 // everything else
 
