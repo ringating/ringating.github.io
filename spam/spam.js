@@ -49,7 +49,7 @@ var imageNames =
 "WutFace.png",
 ]
 var images;
-var indexArray;
+var indexArray = [];
 
 console.log(imageNames);
 
