@@ -74,5 +74,17 @@ function draw()
 {
 	//if( !keyIsDown(SPACE) ){ return; }
 	
-	image(images[0], 200, 200);
+	imageR(images[0], 200, 200);
+}
+
+function imageR(img, x, y)
+{
+	if(img.width/img.height > imageWidth/imageHeight)
+	{
+		image(img, x, y, imageWidth, (imageWidth/img.width)*img.height);
+	}
+	else
+	{
+		image(img, x, y, (imageHeight/img.height)*img.width, imageHeight);
+	}
 }
