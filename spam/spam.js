@@ -49,9 +49,27 @@ var imageNames =
 "WutFace.png",
 ]
 var images;
-var testImage;
+var indexArray;
 
 console.log(imageNames);
+
+function resetIndexArray()
+{
+	indexArray = [];
+	for(let i = 0; i < images.length; ++i)
+	{
+		indexArray.push(i);
+	}
+}
+
+function fetchImage()
+{
+	if(indexArray.length < 1){ resetIndexArray(); }
+	var subIndex = randInt(indexArray.length-1);
+	var index = indexArray[subIndex];
+	indexArray.splice(subIndex, 1);
+	return images[index];
+}
 
 function preload()
 {
@@ -78,7 +96,7 @@ function draw()
 	for(let i = 0; i < imagesPerFrame; ++i)
 	{
 		imageR(
-			images[randInt(images.length)], 
+			fetchImage(), 
 			randIntRange(-imageWidth, canvas.width + imageWidth), 
 			randIntRange(-imageHeight, canvas.height + imageHeight)
 		);
