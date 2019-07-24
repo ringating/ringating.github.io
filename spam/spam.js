@@ -74,5 +74,5 @@ function draw()
 {
 	//if( !keyIsDown(SPACE) ){ return; }
 	
-	image(testImage, 200, 200);
+	image(images[0], 200, 200);
 }
