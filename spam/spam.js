@@ -97,8 +97,8 @@ function draw()
 	{
 		imageR(
 			fetchImage(), 
-			randIntRange(-imageWidth, canvas.width + imageWidth), 
-			randIntRange(-imageHeight, canvas.height + imageHeight)
+			randIntRange(-imageLength, canvas.width + imageLength), 
+			randIntRange(-imageLength, canvas.height + imageLength)
 		);
 	}
 	
