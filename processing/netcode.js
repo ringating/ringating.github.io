@@ -3,18 +3,18 @@ var gameWidth = 500;
 var gameHeight = 500;
 var playerWidth = 55;
 var playerHeight = 100;
-var jumpSpeed = 200; // in units/sec
-var gravity = 400; // in units/sec/sec
+var walkSpeed = 2; // in units/frame
+var jumpSpeed = 10; // in units/frame
+var gravity = 4; // in units/frame/frame
 
 class GameState
 {
-	constructor(posX, posY, velX, velY, grounded)
+	constructor(posX, posY, velX, velY)
 	{
 		this.posX = posX;
 		this.posY = posY;
 		this.velX = velX;
 		this.velY = velY;
-		this.grounded = grounded;
 	}
 }
 
@@ -25,6 +25,7 @@ class PlayerInputs()
 		this.left = left;
 		this.right = right;
 		this.jump = jump;
+		this.jumpPrev = jumpPrev;
 	}
 }
 
@@ -32,7 +33,33 @@ function generateNextGameState(currentGameState, currentPlayerInput)
 {
 	var nextGameState = new GameState();
 	
-	// ...
+	// gravity
+	if(currentGameState.posY > 0)
+	{
+		currentGameState.velY -= gravity;
+	}
+	else
+	{
+		currentGameState.velY = 0;
+	}
+	
+	// jump
+	if(currentPlayerInput.jump && (!currentPlayerInput.jumpPrev) && (currentGameState.posY == 0))
+	{
+		nextGameState.velY = jumpSpeed;
+	}
+	
+	// walk
+	nextGameState.velX = 0;
+	if(currentPlayerInput.right){ nextGameState.velX += walkSpeed; }
+	if(currentPlayerInput.left) { nextGameState.velX -= walkSpeed; }
+	
+	// update position using velocity
+	currentGameState.posX += currentGameState.velX;
+	currentGameState.posY += currentGameState.velY;
+	
+	// "collision" resolution
+	currentGameState.posX = Math.max(0, Math.min(gameWidth - (playerWidth/2), currentGameState.posX));
 	
 	return nextGameState;
 }
