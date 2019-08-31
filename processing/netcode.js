@@ -3,9 +3,9 @@ var gameWidth = 500;
 var gameHeight = 500;
 var playerWidth = 55;
 var playerHeight = 100;
-var walkSpeed = 2; // in units/frame
-var jumpSpeed = 10; // in units/frame
-var gravity = 4; // in units/frame/frame
+var walkSpeed = 5; // in units/frame
+var jumpSpeed = 20; // in units/frame
+var gravity = 1; // in units/frame/frame
 
 class GameState
 {
@@ -18,48 +18,48 @@ class GameState
 	}
 }
 
-class PlayerInputs()
+class PlayerInputs
 {
 	constructor(left, right, jump)
 	{
 		this.left = left;
 		this.right = right;
 		this.jump = jump;
-		this.jumpPrev = jumpPrev;
 	}
 }
 
 function generateNextGameState(currentGameState, currentPlayerInput)
 {
-	var nextGameState = new GameState();
+	var nextGameState = new GameState(currentGameState.posX, currentGameState.posY, currentGameState.velX,currentGameState.velY);
 	
 	// gravity
 	if(currentGameState.posY > 0)
 	{
-		currentGameState.velY -= gravity;
+		nextGameState.velY -= gravity;
 	}
 	else
 	{
-		currentGameState.velY = 0;
+		nextGameState.velY = 0;
 	}
 	
 	// jump
-	if(currentPlayerInput.jump && (!currentPlayerInput.jumpPrev) && (currentGameState.posY == 0))
+	if(currentPlayerInput.jump && (currentGameState.posY == 0))
 	{
 		nextGameState.velY = jumpSpeed;
 	}
 	
 	// walk
 	nextGameState.velX = 0;
-	if(currentPlayerInput.right){ nextGameState.velX += walkSpeed; }
+	if(currentPlayerInput.right){ nextGameState.velX += walkSpeed; /*console.log("trying to move right! velX="+nextGameState.velX);*/ }
 	if(currentPlayerInput.left) { nextGameState.velX -= walkSpeed; }
 	
 	// update position using velocity
-	currentGameState.posX += currentGameState.velX;
-	currentGameState.posY += currentGameState.velY;
+	nextGameState.posX += nextGameState.velX;
+	nextGameState.posY += nextGameState.velY;
 	
 	// "collision" resolution
-	currentGameState.posX = Math.max(0, Math.min(gameWidth - (playerWidth/2), currentGameState.posX));
+	nextGameState.posX = Math.max(playerWidth/2, Math.min(gameWidth - (playerWidth/2), nextGameState.posX));
+	console.log(nextGameState.posX);
 	
 	return nextGameState;
 }
@@ -77,10 +77,18 @@ var myp5 = new p5( function( sketch )
 	var myCanvas;
 	var canvasElt;
 	
-	// game variables
-	var pRadius = playerDiameter / 2;
-	var xVel = 0;
-	var yVel = 0;
+	// game state stuff
+	var localGamestate = new GameState(0,0,0,0);
+	var localPlayerInputs = new PlayerInputs(0,0,0);
+	
+	function getPlayerInputs()
+	{
+		return new PlayerInputs(
+			sketch.keyIsDown(65) == true, // a
+			sketch.keyIsDown(68) == true, // d
+			(sketch.keyIsDown(87) || sketch.keyIsDown(32)) == true // w or space
+		);
+	}
 
 	function calcWidth()
 	{
@@ -145,13 +153,20 @@ var myp5 = new p5( function( sketch )
 		sketch.translate(-lvlWidth/2, -lvlHeight/2);
 		
 		//draw stuff
-		
+		sketch.fill(0);
+		drawGameState(localGamestate, 0, 0, lvlWidth/3, lvlHeight);
 		
 	}
 	
-	function gameLoop()
+	function drawGameState(gs, x, y, w, h)
 	{
-		
+		sketch.rectMode(sketch.CENTER);
+		sketch.rect(
+			x + sketch.map(gs.posX, 0, gameWidth, 0, w),
+			y + h - sketch.map(gs.posY + (playerHeight/2), 0, gameHeight, 0, h),
+			sketch.map(playerWidth, 0, gameWidth, 0, w),
+			sketch.map(playerHeight, 0, gameHeight, 0, h)
+		);
 	}
 
 	sketch.setup = function()
@@ -162,7 +177,8 @@ var myp5 = new p5( function( sketch )
 	
 	sketch.draw = function()
 	{
-		gameLoop();
+		localPlayerInputs = getPlayerInputs();
+		localGamestate = generateNextGameState(localGamestate, localPlayerInputs);
 		myDraw();
 	}
 
