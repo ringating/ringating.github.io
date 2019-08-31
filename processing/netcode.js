@@ -155,7 +155,8 @@ var myp5 = new p5( function( sketch )
 		//draw stuff
 		sketch.fill(0);
 		drawGameState(localGamestate, 0, 0, lvlWidth/3, lvlHeight);
-		
+		drawGameState(localGamestate, lvlWidth/3, 0, lvlWidth/3, lvlHeight);
+		drawGameState(localGamestate, 2*lvlWidth/3, 0, lvlWidth/3, lvlHeight);
 	}
 	
 	function drawGameState(gs, x, y, w, h)
