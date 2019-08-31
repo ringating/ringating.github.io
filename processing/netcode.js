@@ -1,11 +1,13 @@
+// game options
+var gameWidth = 500;
+var gameHeight = 500;
+var playerWidth = 55;
+var playerHeight = 100;
+var jumpSpeed = 200; // in units/sec
+var gravity = 400; // in units/sec/sec
+
 class GameState
 {
-	posX;
-	posY;
-	velX;
-	velY;
-	grounded;
-	
 	constructor(posX, posY, velX, velY, grounded)
 	{
 		this.posX = posX;
@@ -14,6 +16,25 @@ class GameState
 		this.velY = velY;
 		this.grounded = grounded;
 	}
+}
+
+class PlayerInputs()
+{
+	constructor(left, right, jump)
+	{
+		this.left = left;
+		this.right = right;
+		this.jump = jump;
+	}
+}
+
+function generateNextGameState(currentGameState, currentPlayerInput)
+{
+	var nextGameState = new GameState();
+	
+	// ...
+	
+	return nextGameState;
 }
 
 var myp5 = new p5( function( sketch )
@@ -28,11 +49,6 @@ var myp5 = new p5( function( sketch )
 	var argStr;
 	var myCanvas;
 	var canvasElt;
-	
-	// game options, units are in cells
-	var playerDiameter = 1 / 1.61803398875; // ~0.618
-	var gravity = 9.8;
-	var jumpSpeed = 6;
 	
 	// game variables
 	var pRadius = playerDiameter / 2;
@@ -105,10 +121,21 @@ var myp5 = new p5( function( sketch )
 		
 		
 	}
+	
+	function gameLoop()
+	{
+		
+	}
 
 	sketch.setup = function()
 	{
 		mySetup();
+		myDraw();
+	}
+	
+	sketch.draw = function()
+	{
+		gameLoop();
 		myDraw();
 	}
 
