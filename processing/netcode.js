@@ -78,7 +78,7 @@ var myp5 = new p5( function( sketch )
 	var canvasElt;
 	
 	// game state stuff
-	var localGamestate = new GameState(0,0,0,0);
+	var localGamestate = new GameState(gameWidth/2,0,0,0);
 	var localPlayerInputs = new PlayerInputs(0,0,0);
 	
 	function getPlayerInputs()
