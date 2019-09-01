@@ -1,6 +1,6 @@
 // game options
-var gameWidth = 500;
-var gameHeight = 500;
+var gameWidth = 672;
+var gameHeight = 378;
 var playerWidth = 55;
 var playerHeight = 100;
 var walkSpeed = 5; // in units/frame
@@ -71,19 +71,21 @@ var myp5 = new p5( function( sketch )
 	// options
 	var maxCanvasDimension = 1600;
 	var framerate = 60;
-	
-	var aspectRatio = 3/1;
+	var aspectRatio = (gameWidth*3)/gameHeight;
+	var defaultDelayFrames = 8;
 	
 	// variables
 	var argStr;
 	var myCanvas;
 	var canvasElt;
+	var delayFrames = defaultDelayFrames;
 	
 	// game state stuff
 	var localGameState = new GameState(gameWidth/2,0,0,0);
 	var localPlayerInputs = new PlayerInputs(0,0,0);
 	
 	var delayGameState = new GameState(gameWidth/2,0,0,0);
+	var inputQueue = new Array(delayFrames); // initializes to undefined
 	
 	var rollbackGameState = new GameState(gameWidth/2,0,0,0);
 	
@@ -166,7 +168,7 @@ var myp5 = new p5( function( sketch )
 		sketch.strokeWeight(0);
 		drawGameState(localGameState, 0, 0, lvlWidth/3, lvlHeight);
 		drawGameState(localGameState, lvlWidth/3, 0, lvlWidth/3, lvlHeight);
-		drawGameState(localGameState, 2*lvlWidth/3, 0, lvlWidth/3, lvlHeight);
+		drawGameState(delayGameState, 2*lvlWidth/3, 0, lvlWidth/3, lvlHeight);
 	}
 	
 	function drawGameState(gs, x, y, w, h)
@@ -195,6 +197,17 @@ var myp5 = new p5( function( sketch )
 		// update rollback-based gamestate
 		
 		// update delay-based gamestate
+		inputQueue.push(localPlayerInputs); // push new input to inputQueue
+		if(inputQueue[0] == undefined)
+		{
+			// use old game state (game hangs)
+		}
+		else
+		{
+			delayGameState = generateNextGameState(delayGameState, inputQueue[0]);
+			
+		}
+		inputQueue.shift(); // remove inputQueue[0]
 		
 		myDraw();
 	}
