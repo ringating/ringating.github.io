@@ -49,9 +49,12 @@ function generateNextGameState(currentGameState, currentPlayerInput)
 	}
 	
 	// walk
-	nextGameState.velX = 0;
-	if(currentPlayerInput.right){ nextGameState.velX += walkSpeed; /*console.log("trying to move right! velX="+nextGameState.velX);*/ }
-	if(currentPlayerInput.left) { nextGameState.velX -= walkSpeed; }
+	if(currentGameState.posY <= 0)
+	{
+		nextGameState.velX = 0;
+		if(currentPlayerInput.right){ nextGameState.velX += walkSpeed; }
+		if(currentPlayerInput.left) { nextGameState.velX -= walkSpeed; }
+	}
 	
 	// update position using velocity
 	nextGameState.posX += nextGameState.velX;
@@ -59,7 +62,6 @@ function generateNextGameState(currentGameState, currentPlayerInput)
 	
 	// "collision" resolution
 	nextGameState.posX = Math.max(playerWidth/2, Math.min(gameWidth - (playerWidth/2), nextGameState.posX));
-	console.log(nextGameState.posX);
 	
 	return nextGameState;
 }
@@ -78,8 +80,12 @@ var myp5 = new p5( function( sketch )
 	var canvasElt;
 	
 	// game state stuff
-	var localGamestate = new GameState(gameWidth/2,0,0,0);
+	var localGameState = new GameState(gameWidth/2,0,0,0);
 	var localPlayerInputs = new PlayerInputs(0,0,0);
+	
+	var delayGameState = new GameState(gameWidth/2,0,0,0);
+	
+	var rollbackGameState = new GameState(gameWidth/2,0,0,0);
 	
 	function getPlayerInputs()
 	{
@@ -154,9 +160,13 @@ var myp5 = new p5( function( sketch )
 		
 		//draw stuff
 		sketch.fill(0);
-		drawGameState(localGamestate, 0, 0, lvlWidth/3, lvlHeight);
-		drawGameState(localGamestate, lvlWidth/3, 0, lvlWidth/3, lvlHeight);
-		drawGameState(localGamestate, 2*lvlWidth/3, 0, lvlWidth/3, lvlHeight);
+		sketch.strokeWeight(4);
+		sketch.line(lvlWidth/3, 0, lvlWidth/3, lvlHeight);
+		sketch.line(2*lvlWidth/3, 0, 2*lvlWidth/3, lvlHeight);
+		sketch.strokeWeight(0);
+		drawGameState(localGameState, 0, 0, lvlWidth/3, lvlHeight);
+		drawGameState(localGameState, lvlWidth/3, 0, lvlWidth/3, lvlHeight);
+		drawGameState(localGameState, 2*lvlWidth/3, 0, lvlWidth/3, lvlHeight);
 	}
 	
 	function drawGameState(gs, x, y, w, h)
@@ -178,8 +188,14 @@ var myp5 = new p5( function( sketch )
 	
 	sketch.draw = function()
 	{
+		// update local gamestate
 		localPlayerInputs = getPlayerInputs();
-		localGamestate = generateNextGameState(localGamestate, localPlayerInputs);
+		localGameState = generateNextGameState(localGameState, localPlayerInputs);
+		
+		// update rollback-based gamestate
+		
+		// update delay-based gamestate
+		
 		myDraw();
 	}
 
