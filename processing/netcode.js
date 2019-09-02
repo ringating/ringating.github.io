@@ -172,21 +172,21 @@ var myp5 = new p5( function( sketch )
 		sketch.strokeWeight(0);
 		// rollback view
 		sketch.push();
-		sketch.fill(185,0,0);
+		sketch.fill(170,0,0);
 		sketch.translate(lvlWidth,0);
 		sketch.scale(-1,1);
 		drawGameState(rollbackGameState, lvlWidth/2, 0, lvlWidth/2, lvlHeight);
 		sketch.pop();
-		sketch.fill(0,0,185);
+		sketch.fill(0,0,170);
 		drawGameState(localGameState, 0, 0, lvlWidth/2, lvlHeight);
 		//delay view
 		sketch.push();
-		sketch.fill(185,0,0);
+		sketch.fill(170,0,0);
 		sketch.translate(lvlWidth,0);
 		sketch.scale(-1,1);
 		drawGameState(delayGameState, 0, 0, lvlWidth/2, lvlHeight);
 		sketch.pop()
-		sketch.fill(0,0,185);
+		sketch.fill(0,0,170);
 		drawGameState(delayGameState, lvlWidth/2, 0, lvlWidth/2, lvlHeight);
 	}
 	
