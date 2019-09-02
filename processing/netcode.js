@@ -88,7 +88,8 @@ var myp5 = new p5( function( sketch )
 	var inputQueue = new Array(delayFrames); // initializes to undefined
 	
 	var rollbackGameState = new GameState(gameWidth/2,0,0,0);
-	var gameStateQueue = new Array(delayFrames); // initializes to undefined
+	var bestRealInput;
+	var bestRealGameState;
 	
 	function getPlayerInputs()
 	{
@@ -161,11 +162,14 @@ var myp5 = new p5( function( sketch )
 		sketch.rect(0, 0, lvlWidth, lvlHeight);
 		sketch.translate(-lvlWidth/2, -lvlHeight/2);
 		
+		
 		//draw stuff
 		sketch.fill(0);
 		sketch.strokeWeight(4);
+		sketch.strokeCap(sketch.SQUARE);
 		sketch.line(lvlWidth/3, 0, lvlWidth/3, lvlHeight);
 		sketch.line(2*lvlWidth/3, 0, 2*lvlWidth/3, lvlHeight);
+		
 		sketch.strokeWeight(0);
 		drawGameState(localGameState, 0, 0, lvlWidth/3, lvlHeight);
 		drawGameState(rollbackGameState, lvlWidth/3, 0, lvlWidth/3, lvlHeight);
@@ -195,16 +199,6 @@ var myp5 = new p5( function( sketch )
 		localPlayerInputs = getPlayerInputs();
 		localGameState = generateNextGameState(localGameState, localPlayerInputs);
 		
-		// update rollback-based gamestate
-		/*if(bestInput == undefined)
-		{
-			// use old game state (game hangs)
-		}
-		else
-		{
-			
-		}*/
-		
 		// update delay-based gamestate
 		inputQueue.push(localPlayerInputs); // push new input to inputQueue
 		if(inputQueue[0] == undefined)
@@ -214,8 +208,21 @@ var myp5 = new p5( function( sketch )
 		else
 		{
 			delayGameState = generateNextGameState(delayGameState, inputQueue[0]);
-			
+			// store for rollback
+			bestRealGameState = delayGameState;
+			bestRealInput = inputQueue[0];
 		}
+		
+		// update rollback gamestate
+		if(bestRealInput != undefined)
+		{
+			rollbackGameState = bestRealGameState;
+			for(let i = 0; i < delayFrames; ++i)
+			{
+				rollbackGameState = generateNextGameState(rollbackGameState, bestRealInput);
+			}
+		}
+		
 		inputQueue.shift(); // remove inputQueue[0]
 		
 		myDraw();
