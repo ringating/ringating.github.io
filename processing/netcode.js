@@ -71,7 +71,7 @@ var myp5 = new p5( function( sketch )
 	// options
 	var maxCanvasDimension = 1600;
 	var framerate = 60;
-	var aspectRatio = (gameWidth*3)/gameHeight;
+	var aspectRatio = (gameWidth*2)/gameHeight;
 	var defaultDelayFrames = 8;
 	
 	// variables
@@ -81,13 +81,13 @@ var myp5 = new p5( function( sketch )
 	var delayFrames = defaultDelayFrames;
 	
 	// game state stuff
-	var localGameState = new GameState(gameWidth/2,0,0,0);
+	var localGameState = new GameState(gameWidth/4,0,0,0);
 	var localPlayerInputs = new PlayerInputs(0,0,0);
 	
-	var delayGameState = new GameState(gameWidth/2,0,0,0);
+	var delayGameState = new GameState(gameWidth/4,0,0,0);
 	var inputQueue = new Array(delayFrames); // initializes to undefined
 	
-	var rollbackGameState = new GameState(gameWidth/2,0,0,0);
+	var rollbackGameState = new GameState(gameWidth/4,0,0,0);
 	var bestRealInput;
 	var bestRealGameState;
 	
@@ -167,13 +167,27 @@ var myp5 = new p5( function( sketch )
 		sketch.fill(0);
 		sketch.strokeWeight(4);
 		sketch.strokeCap(sketch.SQUARE);
-		sketch.line(lvlWidth/3, 0, lvlWidth/3, lvlHeight);
-		sketch.line(2*lvlWidth/3, 0, 2*lvlWidth/3, lvlHeight);
+		sketch.line(lvlWidth/2, 0, lvlWidth/2, lvlHeight);
 		
 		sketch.strokeWeight(0);
-		drawGameState(localGameState, 0, 0, lvlWidth/3, lvlHeight);
-		drawGameState(rollbackGameState, lvlWidth/3, 0, lvlWidth/3, lvlHeight);
-		drawGameState(delayGameState, 2*lvlWidth/3, 0, lvlWidth/3, lvlHeight);
+		// rollback view
+		sketch.push();
+		sketch.fill(185,0,0);
+		sketch.translate(lvlWidth,0);
+		sketch.scale(-1,1);
+		drawGameState(rollbackGameState, lvlWidth/2, 0, lvlWidth/2, lvlHeight);
+		sketch.pop();
+		sketch.fill(0,0,185);
+		drawGameState(localGameState, 0, 0, lvlWidth/2, lvlHeight);
+		//delay view
+		sketch.push();
+		sketch.fill(185,0,0);
+		sketch.translate(lvlWidth,0);
+		sketch.scale(-1,1);
+		drawGameState(delayGameState, 0, 0, lvlWidth/2, lvlHeight);
+		sketch.pop()
+		sketch.fill(0,0,185);
+		drawGameState(delayGameState, lvlWidth/2, 0, lvlWidth/2, lvlHeight);
 	}
 	
 	function drawGameState(gs, x, y, w, h)
