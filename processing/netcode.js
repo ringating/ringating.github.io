@@ -163,13 +163,23 @@ var myp5 = new p5( function( sketch )
 		sketch.translate(-lvlWidth/2, -lvlHeight/2);
 		
 		
-		//draw stuff
+		// draw stuff
+		
+		// line
 		sketch.fill(0);
 		sketch.strokeWeight(4);
 		sketch.strokeCap(sketch.SQUARE);
 		sketch.line(lvlWidth/2, 0, lvlWidth/2, lvlHeight);
-		
 		sketch.strokeWeight(0);
+		
+		// text
+		sketch.textAlign(sketch.LEFT, sketch.TOP);
+		sketch.textSize(28);
+		sketch.text("rollback", 12, 8);
+		sketch.text("delay", lvlWidth/2 + 12, 8);
+		sketch.fill(255);
+		sketch.text("latency: " + delayFrames + " frames", 9, lvlHeight + 8);
+		
 		// rollback view
 		sketch.push();
 		sketch.fill(170,0,0);
@@ -185,7 +195,7 @@ var myp5 = new p5( function( sketch )
 		sketch.translate(lvlWidth,0);
 		sketch.scale(-1,1);
 		drawGameState(delayGameState, 0, 0, lvlWidth/2, lvlHeight);
-		sketch.pop()
+		sketch.pop();
 		sketch.fill(0,0,170);
 		drawGameState(delayGameState, lvlWidth/2, 0, lvlWidth/2, lvlHeight);
 	}
@@ -205,6 +215,25 @@ var myp5 = new p5( function( sketch )
 	{
 		mySetup();
 		myDraw();
+	}
+	
+	sketch.keyPressed = function()
+	{
+		if(sketch.keyCode === 38)
+		{
+			// increment delayFrames
+			delayFrames++;
+			inputQueue.unshift(undefined);
+		}
+		else if(sketch.keyCode === 40)
+		{
+			// decrement delayFrames
+			if(delayFrames > 0)
+			{
+				delayFrames--;
+				inputQueue.shift();
+			}
+		}
 	}
 	
 	sketch.draw = function()
