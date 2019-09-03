@@ -72,7 +72,7 @@ var myp5 = new p5( function( sketch )
 	var maxCanvasDimension = 1600;
 	var framerate = 60;
 	var aspectRatio = (gameWidth*2)/gameHeight;
-	var defaultDelayFrames = 8;
+	var defaultDelayFrames = 6;
 	
 	// variables
 	var argStr;
@@ -179,6 +179,8 @@ var myp5 = new p5( function( sketch )
 		sketch.text("delay", lvlWidth/2 + 12, 8);
 		sketch.fill(255);
 		sketch.text("latency: " + delayFrames + " frames", 9, lvlHeight + 8);
+		sketch.textSize(20);
+		sketch.text((delayFrames*2*16.66666666666).toFixed(2) + " ms ping or lower", 9, lvlHeight + 44);
 		
 		// rollback view
 		sketch.push();
