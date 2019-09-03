@@ -72,7 +72,7 @@ var myp5 = new p5( function( sketch )
 	var maxCanvasDimension = 1600;
 	var framerate = 60;
 	var aspectRatio = (gameWidth*2)/gameHeight;
-	var defaultDelayFrames = 6;
+	var defaultDelayFrames = 4;
 	
 	// variables
 	var argStr;
