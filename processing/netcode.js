@@ -72,7 +72,7 @@ var myp5 = new p5( function( sketch )
 	var maxCanvasDimension = 1600;
 	var framerate = 60;
 	var aspectRatio = (gameWidth*2)/gameHeight;
-	var defaultDelayFrames = 7;
+	var defaultDelayFrames = 10;
 	var defaultHybridDelayFrames = 3;
 	
 	// variables
@@ -178,21 +178,34 @@ var myp5 = new p5( function( sketch )
 		// text
 		sketch.textAlign(sketch.LEFT, sketch.TOP);
 		sketch.textSize(28);
+		sketch.textStyle(sketch.BOLD);
 		sketch.text("rollback", 12, 8);
+		sketch.textStyle(sketch.NORMAL);
 		sketch.textSize(20);
-		sketch.text("fixed buffer:\nprediction:", 12, 44);
-		sketch.text(hybridDelayFrames + " frames  ◄ ►\n" + (delayFrames - hybridDelayFrames) + " frames", 126, 44);
+		sketch.text("fixed input buffer:\nrollback/prediction:", 12, 44);
+		sketch.text(hybridDelayFrames + " frames  ◄ ►\n" + (delayFrames - hybridDelayFrames) + " frames", 186, 44);
 		sketch.textSize(28);
-		sketch.text("delay", lvlWidth/2 + 12, 8);
+		sketch.textStyle(sketch.BOLD);
+		sketch.text("delay (lockstep)", lvlWidth/2 + 12, 8);
+		sketch.textStyle(sketch.NORMAL);
 		sketch.textSize(20);
-		sketch.text("buffer: " + delayFrames + " frames", lvlWidth/2 + 12, 44);
+		sketch.text("input buffer: " + delayFrames + " frames", lvlWidth/2 + 12, 44);
 		sketch.textSize(28);
 		sketch.fill(255);
-		sketch.text("one-way network latency: " + delayFrames + " frames  ▲▼", 9, lvlHeight + 8);
+		sketch.textAlign(sketch.LEFT, sketch.BOTTOM);
+		sketch.text("one-way network latency: " + delayFrames + " frames  ▲▼", 9, -8);
 		sketch.textSize(20);
-		sketch.text((delayFrames*2*16.66666666666).toFixed(2) + " ms ping or lower", 9, lvlHeight + 44);
+		sketch.text((delayFrames*2*16.66666666666).toFixed(2) + " ms ping or lower", 9, -44);
 		sketch.textAlign(sketch.RIGHT, sketch.BOTTOM);
-		sketch.text("control the blue rectangles with WASD", lvlWidth - 8, -8);
+		//sketch.text("CONTROLS\n\nwalk with A and D\njump with W or Space\n\nadjust network latency with the Up and Down arrow keys\nadjust the fixed input buffer for \"rollback\" with the Left and Right arrow keys", lvlWidth - 8, -8);
+		sketch.textSize(28);
+		//sketch.textStyle(sketch.BOLD);
+		sketch.text("CONTROLS", lvlWidth - 8, -62);
+		sketch.textSize(20);
+		sketch.textStyle(sketch.NORMAL);
+		sketch.text("walk with A and D\njump with W or Space", lvlWidth - 8, -8);
+		sketch.textAlign(sketch.LEFT, sketch.TOP);
+		sketch.text("For reference, MKX has a 3 frame constant/fixed input buffer\nand supports up to 7 frames of rollback/prediction.", 8, lvlHeight  + 8);
 		
 		// rollback view
 		sketch.push();
