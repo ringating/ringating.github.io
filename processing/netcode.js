@@ -72,13 +72,15 @@ var myp5 = new p5( function( sketch )
 	var maxCanvasDimension = 1600;
 	var framerate = 60;
 	var aspectRatio = (gameWidth*2)/gameHeight;
-	var defaultDelayFrames = 4;
+	var defaultDelayFrames = 6;
+	var defaultHybridDelayFrames = 3;
 	
 	// variables
 	var argStr;
 	var myCanvas;
 	var canvasElt;
 	var delayFrames = defaultDelayFrames;
+	var hybridDelayFrames = defaultHybridDelayFrames;
 	
 	// game state stuff
 	var localGameState = new GameState(gameWidth/4,0,0,0);
@@ -176,9 +178,16 @@ var myp5 = new p5( function( sketch )
 		sketch.textAlign(sketch.LEFT, sketch.TOP);
 		sketch.textSize(28);
 		sketch.text("rollback", 12, 8);
+		sketch.textSize(20);
+		sketch.text("fixed buffer:\nprediction:", 12, 44);
+		sketch.text(0 + " frames\n" + delayFrames + " frames", 126, 44);
+		sketch.textSize(28);
 		sketch.text("delay", lvlWidth/2 + 12, 8);
+		sketch.textSize(20);
+		sketch.text("buffer: " + delayFrames + " frames", lvlWidth/2 + 12, 44);
+		sketch.textSize(28);
 		sketch.fill(255);
-		sketch.text("latency: " + delayFrames + " frames", 9, lvlHeight + 8);
+		sketch.text("one-way network latency: " + delayFrames + " frames", 9, lvlHeight + 8);
 		sketch.textSize(20);
 		sketch.text((delayFrames*2*16.66666666666).toFixed(2) + " ms ping or lower", 9, lvlHeight + 44);
 		
