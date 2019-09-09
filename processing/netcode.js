@@ -205,7 +205,9 @@ var myp5 = new p5( function( sketch )
 		sketch.textStyle(sketch.NORMAL);
 		sketch.text("walk with A and D\njump with W or Space", lvlWidth - 8, -8);
 		sketch.textAlign(sketch.LEFT, sketch.TOP);
-		sketch.text("For reference, MKX has a 3 frame constant/fixed input buffer\nand supports up to 7 frames of rollback/prediction.", 8, lvlHeight  + 8);
+		sketch.text("For reference, NRS games that utilize rollback netcode have a 3 frame\nconstant/fixed input buffer and support up to 7 frames of rollback/prediction.", 8, lvlHeight  + 8);
+		sketch.textAlign(sketch.RIGHT, sketch.TOP);
+		sketch.text("adjust certain values with the arrow keys.\nrefresh the page to reset these values.", lvlWidth - 8, lvlHeight  + 8);
 		
 		// rollback view
 		sketch.push();
