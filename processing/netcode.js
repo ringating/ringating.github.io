@@ -72,7 +72,7 @@ var myp5 = new p5( function( sketch )
 	var maxCanvasDimension = 1600;
 	var framerate = 60;
 	var aspectRatio = (gameWidth*2)/gameHeight;
-	var defaultDelayFrames = 6;
+	var defaultDelayFrames = 7;
 	var defaultHybridDelayFrames = 3;
 	
 	// variables
@@ -87,9 +87,10 @@ var myp5 = new p5( function( sketch )
 	var localPlayerInputs = new PlayerInputs(0,0,0);
 	
 	var delayGameState = new GameState(gameWidth/4,0,0,0);
-	var inputQueue = new Array(delayFrames); // initializes to undefined
+	var inputQueue = new Array(delayFrames); // assumed that elements initialize to undefined
 	
 	var rollbackGameState = new GameState(gameWidth/4,0,0,0);
+	var rollbackInputQueue = new Array(hybridDelayFrames); // assumed that elements initialize to undefined
 	var bestRealInput;
 	var bestRealGameState;
 	
@@ -180,7 +181,7 @@ var myp5 = new p5( function( sketch )
 		sketch.text("rollback", 12, 8);
 		sketch.textSize(20);
 		sketch.text("fixed buffer:\nprediction:", 12, 44);
-		sketch.text(0 + " frames\n" + delayFrames + " frames", 126, 44);
+		sketch.text(hybridDelayFrames + " frames\n" + (delayFrames - hybridDelayFrames) + " frames", 126, 44);
 		sketch.textSize(28);
 		sketch.text("delay", lvlWidth/2 + 12, 8);
 		sketch.textSize(20);
@@ -230,31 +231,65 @@ var myp5 = new p5( function( sketch )
 	
 	sketch.keyPressed = function()
 	{
-		if(sketch.keyCode === 38)
+		if(sketch.keyCode === 38) // up arrow
 		{
 			// increment delayFrames
 			delayFrames++;
 			inputQueue.unshift(undefined);
 		}
-		else if(sketch.keyCode === 40)
+		else if(sketch.keyCode === 40) // down arrow
 		{
 			// decrement delayFrames
 			if(delayFrames > 0)
 			{
 				delayFrames--;
 				inputQueue.shift();
+				if(hybridDelayFrames > delayFrames)
+				{
+					// force decrement delay frames
+					hybridDelayFrames--;
+					rollbackInputQueue.shift();
+				}
+			}
+		}
+		else if(sketch.keyCode === 39) // right arrow
+		{
+			// increment hybridDelayFrames
+			if(hybridDelayFrames < delayFrames)
+			{
+				hybridDelayFrames++;
+				rollbackInputQueue.unshift(undefined);
+			}
+		}
+		else if(sketch.keyCode === 37) // left arrow
+		{
+			// decrement hybridDelayFrames
+			if(hybridDelayFrames > 0)
+			{
+				hybridDelayFrames--;
+				rollbackInputQueue.shift();
 			}
 		}
 	}
 	
 	sketch.draw = function()
 	{
-		// update local gamestate
 		localPlayerInputs = getPlayerInputs();
-		localGameState = generateNextGameState(localGameState, localPlayerInputs);
+		
+		// update fixed delay (local) gamestate
+		//localGameState = generateNextGameState(localGameState, localPlayerInputs);
+		rollbackInputQueue.push(localPlayerInputs);
+		if(rollbackInputQueue[0] == undefined)
+		{
+			// use old game state (game hangs)
+		}
+		else
+		{
+			localGameState = generateNextGameState(localGameState, rollbackInputQueue[0]);
+		}
 		
 		// update delay-based gamestate
-		inputQueue.push(localPlayerInputs); // push new input to inputQueue
+		inputQueue.push(localPlayerInputs);
 		if(inputQueue[0] == undefined)
 		{
 			// use old game state (game hangs)
@@ -271,13 +306,14 @@ var myp5 = new p5( function( sketch )
 		if(bestRealInput != undefined)
 		{
 			rollbackGameState = bestRealGameState;
-			for(let i = 0; i < delayFrames; ++i)
+			for(let i = 0; i < (delayFrames - hybridDelayFrames); ++i)
 			{
 				rollbackGameState = generateNextGameState(rollbackGameState, bestRealInput);
 			}
 		}
 		
 		inputQueue.shift(); // remove inputQueue[0]
+		rollbackInputQueue.shift();
 		
 		myDraw();
 	}
