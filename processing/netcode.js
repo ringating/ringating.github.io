@@ -181,16 +181,18 @@ var myp5 = new p5( function( sketch )
 		sketch.text("rollback", 12, 8);
 		sketch.textSize(20);
 		sketch.text("fixed buffer:\nprediction:", 12, 44);
-		sketch.text(hybridDelayFrames + " frames\n" + (delayFrames - hybridDelayFrames) + " frames", 126, 44);
+		sketch.text(hybridDelayFrames + " frames  ◄ ►\n" + (delayFrames - hybridDelayFrames) + " frames", 126, 44);
 		sketch.textSize(28);
 		sketch.text("delay", lvlWidth/2 + 12, 8);
 		sketch.textSize(20);
 		sketch.text("buffer: " + delayFrames + " frames", lvlWidth/2 + 12, 44);
 		sketch.textSize(28);
 		sketch.fill(255);
-		sketch.text("one-way network latency: " + delayFrames + " frames", 9, lvlHeight + 8);
+		sketch.text("one-way network latency: " + delayFrames + " frames  ▲▼", 9, lvlHeight + 8);
 		sketch.textSize(20);
 		sketch.text((delayFrames*2*16.66666666666).toFixed(2) + " ms ping or lower", 9, lvlHeight + 44);
+		sketch.textAlign(sketch.RIGHT, sketch.BOTTOM);
+		sketch.text("control the blue rectangles with WASD", lvlWidth - 8, -8);
 		
 		// rollback view
 		sketch.push();
