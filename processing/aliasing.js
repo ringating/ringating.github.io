@@ -1,4 +1,4 @@
-var fps = 60;
+var fps = 240;
 var cyclesPerSec = 2;
 var samplesPerSec = 2.2;
 var rotationRadius = 200;
