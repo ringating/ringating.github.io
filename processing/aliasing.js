@@ -1,4 +1,4 @@
-var fps = 240;
+var fps = 60;
 var cyclesPerSec = 2;
 var samplesPerSec = 2.2;
 var rotationRadius = 200;
@@ -9,9 +9,8 @@ var shape =
 {
     d: 80,
     pos: 0,
-    speed: cyclesPerSec/fps // in % of the period per frame
+    speed: cyclesPerSec/fps // in % of a revolution per frame
 }
-
 
 var afterimage = 
 {
@@ -20,11 +19,24 @@ var afterimage =
     pos: 0
 }
 
+var reconstructed = 
+{
+    pos:0,
+    speed:0
+}
+
+var pastPos = 
+{
+    a:0,
+    b:0,
+    delta:0
+}
+
 
 
 var frameCounter = 0;
 
-var xOffset = 0;
+var xOffset = 600;
 
 
 
@@ -44,9 +56,21 @@ function draw()
         noStroke();
         translate(windowWidth/2,windowHeight/2);
         
+        // signal circle
         fill("rgba(0,0,0,1)");
-        circle(-xOffset +cos(shape.pos * TWO_PI) * rotationRadius, -sin(shape.pos * TWO_PI) * rotationRadius, shape.d);
+        circle(-xOffset + cos(shape.pos * TWO_PI) * rotationRadius, -sin(shape.pos * TWO_PI) * rotationRadius, shape.d);
+        // signal's sampling circle
+        fill("rgba(0,0,0," + afterimage.alpha + ")");
+        circle(-xOffset + cos(afterimage.pos * TWO_PI) * rotationRadius, -sin(afterimage.pos * TWO_PI) * rotationRadius, shape.d);
         
+        // solo sampling circle
+        fill("rgba(0,0,0," + afterimage.alpha + ")");
+        circle(cos(afterimage.pos * TWO_PI) * rotationRadius, -sin(afterimage.pos * TWO_PI) * rotationRadius, shape.d);
+        
+        // reconstructed signal circle
+        fill("rgba(0,0,0,1)");
+        circle(xOffset + cos(reconstructed.pos * TWO_PI) * rotationRadius, -sin(reconstructed.pos * TWO_PI) * rotationRadius, shape.d);
+        // reconstructed signal's sampling circle
         fill("rgba(0,0,0," + afterimage.alpha + ")");
         circle(xOffset + cos(afterimage.pos * TWO_PI) * rotationRadius, -sin(afterimage.pos * TWO_PI) * rotationRadius, shape.d);
     pop();
@@ -65,4 +89,23 @@ function draw()
     }
     
     afterimage.alpha -= afterimage.delta;
+    
+    reconstructed.pos += reconstructed.speed;
+    if(afterimage.pos != pastPos.a)
+    {
+        pastPos.b = pastPos.a;
+        pastPos.a = afterimage.pos;
+        pastPos.delta = pastPos.a - pastPos.b
+        reconstructed.pos = afterimage.pos;
+    }
+    
+    if(abs(pastPos.delta) > 0.5)
+    {
+        pastPos.delta = 1 - abs(pastPos.delta / framesUntilUpdate);
+    }
+    else
+    {
+        reconstructed.speed = pastPos.delta / framesUntilUpdate;
+    }
+    
 }
