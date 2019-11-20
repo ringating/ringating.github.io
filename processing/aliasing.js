@@ -56,6 +56,11 @@ function draw()
         noStroke();
         translate(windowWidth/2,windowHeight/2);
         
+        textAlign(CENTER, CENTER);
+        textSize(32);
+        
+        text("cycles per sec: " + cyclesPerSec + "\nsamples per sec: " + samplesPerSec, 0, 340);
+        
         // signal circle
         fill("rgba(0,0,0,1)");
         circle(-xOffset + cos(shape.pos * TWO_PI) * rotationRadius, -sin(shape.pos * TWO_PI) * rotationRadius, shape.d);
