@@ -1,9 +1,18 @@
-var fps = 60;
+// options
 var cyclesPerSec = 2;
 var samplesPerSec = 2.2;
 var rotationRadius = 200;
+var xOffset = 600;
 
+
+// variables, will change programatically
+var fps = 60;
 var framesUntilUpdate = (1/samplesPerSec) * fps;
+var frameCounter = 0;
+var dt = 1/60; // deltaTime, but in seconds
+
+var secPerSample = 1/samplesPerSec;
+var timer = 0;
 
 var shape = 
 {
@@ -29,27 +38,64 @@ var pastPos =
 {
     a:0,
     b:0,
-    delta:0
+    e:0, // for extrapolated
+    delta:0 // difference between a and b, used to get c
 }
-
-
-
-var frameCounter = 0;
-
-var xOffset = 600;
-
 
 
 function setup()
 {
-	frameRate(fps);
+	frameRate(999);
 	createCanvas(windowWidth, windowHeight);
 	background(255);
 }
 
 function draw() 
 {
-	// draw
+    // update framerate-related stuff
+    dt = deltaTime/1000;
+    fps = 1/dt;
+    framesUntilUpdate = (1/samplesPerSec) * fps;
+    shape.speed = cyclesPerSec/fps;
+    afterimage.delta = 1/framesUntilUpdate;
+    
+    
+    // update states
+    shape.pos += shape.speed;
+    shape.pos %= 1;
+    
+    // frameCounter++;
+    // if(frameCounter >= framesUntilUpdate)
+    // {
+        // frameCounter = 0;
+        // afterimage.pos = shape.pos;
+        // afterimage.alpha = 1;
+    // }
+    
+    timer += dt;
+    if(timer >= secPerSample)
+    {
+        timer = 0;
+        afterimage.pos = shape.pos;
+        afterimage.alpha = 1;
+    }
+    
+    afterimage.alpha -= afterimage.delta;
+    
+    // reconstructed.pos += reconstructed.speed;
+    if(afterimage.pos != pastPos.a)
+    {
+        pastPos.b = pastPos.a;
+        pastPos.a = afterimage.pos;
+        pastPos.delta = pastPos.a - pastPos.b;
+        pastPos.c = pastPos.a + pastPos.delta;
+    }
+    
+    reconstructed.pos = lerp(pastPos.a, pastPos.a + pastPos.delta, timer/secPerSample) % 1;
+    
+    
+    
+    // draw
     background(255);
     
     push();
@@ -81,36 +127,5 @@ function draw()
     pop();
     
     
-    // update states
-    shape.pos += shape.speed;
-    shape.pos %= 1;
-    
-    frameCounter++;
-    if(frameCounter >= framesUntilUpdate)
-    {
-        frameCounter = 0;
-        afterimage.pos = shape.pos;
-        afterimage.alpha = 1;
-    }
-    
-    afterimage.alpha -= afterimage.delta;
-    
-    reconstructed.pos += reconstructed.speed;
-    if(afterimage.pos != pastPos.a)
-    {
-        pastPos.b = pastPos.a;
-        pastPos.a = afterimage.pos;
-        pastPos.delta = pastPos.a - pastPos.b
-        reconstructed.pos = afterimage.pos;
-    }
-    
-    if(abs(pastPos.delta) > 0.5)
-    {
-        pastPos.delta = 1 - abs(pastPos.delta / framesUntilUpdate);
-    }
-    else
-    {
-        reconstructed.speed = pastPos.delta / framesUntilUpdate;
-    }
     
 }
