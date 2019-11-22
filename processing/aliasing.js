@@ -118,7 +118,7 @@ function draw()
         text("samples per sec: " + samplesPerSec, 0, 320);
         text("cycles per sec:", xOffset - 30, 320);
         textAlign(LEFT, CENTER);
-        text("" + Math.round(reconstructed.cyclesPerSec*1000)/1000, xOffset + 85, 320);
+        text(reconstructed.cyclesPerSec.toPrecision(getPrecision(cyclesPerSec)), xOffset + 85, 320);
         
         textAlign(CENTER, CENTER);
         textSize(20);
@@ -175,4 +175,16 @@ function mod1(r)
     if(r < 0)
         return 1+(r%1);
     return r%1;
+}
+
+// this only works since the values it's called on can only be adjusted in 1/10 increments
+function getPrecision(num)
+{
+    var numStr = ""+num;
+    var prec = numStr.length;
+    if(numStr.indexOf('0') == 0)
+        prec--;
+    if(numStr.indexOf('.') >= 0)
+        prec--;
+    return prec;
 }
