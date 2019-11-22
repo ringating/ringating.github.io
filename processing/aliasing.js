@@ -1,20 +1,22 @@
 // options
 
 var cyclesPerSec = .5;
-var samplesPerSec = .6;
+var samplesPerSec = 2;
 var rotationRadius = 200;
 var xOffset = 600;
+var secPerFPSUpdate = .1;
 
 
 // variables, will change programatically
 
 var fps = 60;
-var framesUntilUpdate = (1/samplesPerSec) * fps;
-var frameCounter = 0;
 var dt = 1/60; // deltaTime, but in seconds
 
 var secPerSample = 1/samplesPerSec;
 var timer = 0;
+
+var fpsTimer = 0;
+var drawnFPS = fps.toPrecision(3);;
 
 var shape = 
 {
@@ -26,7 +28,6 @@ var shape =
 var sample = 
 {
     alpha: 1,
-    delta: 1/framesUntilUpdate,
     pos: 0
 }
 
@@ -49,7 +50,7 @@ var pastPos =
 
 function setup()
 {
-	frameRate(20);
+	frameRate(999);
 	createCanvas(windowWidth, windowHeight);
 	background(255);
 }
@@ -59,6 +60,8 @@ function draw()
     // update framerate-related stuff
     dt = deltaTime/1000;
     fps = 1/dt;
+    secPerSample = 1/samplesPerSec;
+    fpsTimer += dt;
     
     
     // update states
@@ -98,7 +101,14 @@ function draw()
     background(255);
     textAlign(LEFT, TOP);
     // text(dt.toPrecision(5),0,0);
-    text(timer,0,0);
+    // text(timer,0,0);
+    if(fpsTimer > secPerFPSUpdate)
+    {
+        drawnFPS = fps.toPrecision(3);
+        fpsTimer %= secPerFPSUpdate;
+    }
+        
+    text(drawnFPS,0,0);
     
     push();
         noStroke();
@@ -113,23 +123,42 @@ function draw()
         fill("rgba(0,0,0,1)");
         circle(-xOffset + cos(shape.pos * TWO_PI) * rotationRadius, -sin(shape.pos * TWO_PI) * rotationRadius, shape.d);
         // signal's sampling circle
-        fill("rgba(255,0,0," + 1 + ")");
+        fill("rgba(126,69,183," + sample.alpha + ")");
         circle(-xOffset + cos(sample.pos * TWO_PI) * rotationRadius, -sin(sample.pos * TWO_PI) * rotationRadius, shape.d);
         
         // solo sampling circle
-        fill("rgba(0,0,0," + sample.alpha + ")");
+        fill("rgba(126,69,183," + sample.alpha + ")");
         circle(cos(sample.pos * TWO_PI) * rotationRadius, -sin(sample.pos * TWO_PI) * rotationRadius, shape.d);
         
         // reconstructed signal circle
         fill("rgba(0,0,0,1)");
         circle(xOffset + cos(reconstructed.pos * TWO_PI) * rotationRadius, -sin(reconstructed.pos * TWO_PI) * rotationRadius, shape.d);
         // reconstructed signal's sampling circle
-        fill("rgba(0,0,0," + sample.alpha + ")");
+        fill("rgba(126,69,183," + sample.alpha + ")");
         circle(xOffset + cos(sample.pos * TWO_PI) * rotationRadius, -sin(sample.pos * TWO_PI) * rotationRadius, shape.d);
     pop();
     
     
     
+}
+
+function keyPressed()
+{
+    switch(keyCode) // up arrow
+    {
+        case 38: // up arrow
+            cyclesPerSec = Math.round(cyclesPerSec*10 + 1)/10;
+            break;
+        case 40: // down arrow
+            cyclesPerSec = Math.round(cyclesPerSec*10 - 1)/10;
+            break;
+        case 39: // right arrow
+            samplesPerSec = Math.round(samplesPerSec*10 + 1)/10;
+            break;
+        case 37: // left arrow
+            samplesPerSec = Math.round(samplesPerSec*10 - 1)/10;
+            break;
+    }
 }
 
 
