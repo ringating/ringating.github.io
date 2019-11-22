@@ -1,7 +1,7 @@
 // options
 
-var cyclesPerSec = 2;
-var samplesPerSec = 2.2;
+var cyclesPerSec = .5;
+var samplesPerSec = .6;
 var rotationRadius = 200;
 var xOffset = 600;
 
@@ -49,7 +49,7 @@ var pastPos =
 
 function setup()
 {
-	frameRate(999);
+	frameRate(2);
 	createCanvas(windowWidth, windowHeight);
 	background(255);
 }
@@ -59,24 +59,21 @@ function draw()
     // update framerate-related stuff
     dt = deltaTime/1000;
     fps = 1/dt;
-    framesUntilUpdate = (1/samplesPerSec) * fps;
-    shape.speed = cyclesPerSec/fps;
-    afterimage.delta = 1/framesUntilUpdate;
     
     
     // update states
-    shape.pos += shape.speed;
-    shape.pos %= 1;
+    shape.speed = cyclesPerSec/fps;
+    shape.pos = mod1(shape.pos + shape.speed);
     
     timer += dt;
-    if(timer >= secPerSample)
+    if(timer > secPerSample)
     {
-        timer = 0;
-        afterimage.pos = shape.pos;
-        afterimage.alpha = 1;
+        timer = timer - secPerSample;
+        // afterimage.pos = shape.pos;
+        afterimage.pos = lerp(afterimage.pos, shape.pos, 1-timer);
     }
     
-    afterimage.alpha -= afterimage.delta;
+    afterimage.alpha = 1 - (timer / secPerSample);
     
     if(afterimage.pos != pastPos.a)
     {
@@ -97,6 +94,8 @@ function draw()
     
     // draw
     background(255);
+    textAlign(LEFT, TOP);
+    text(dt.toPrecision(5),0,0);
     
     push();
         noStroke();
