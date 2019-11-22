@@ -23,7 +23,7 @@ var shape =
     speed: cyclesPerSec/fps // in % of a revolution per frame
 }
 
-var afterimage = 
+var sample = 
 {
     alpha: 1,
     delta: 1/framesUntilUpdate,
@@ -49,7 +49,7 @@ var pastPos =
 
 function setup()
 {
-	frameRate(30);
+	frameRate(20);
 	createCanvas(windowWidth, windowHeight);
 	background(255);
 }
@@ -69,17 +69,18 @@ function draw()
     if(timer > secPerSample)
     {
         timer %= secPerSample;
-        // afterimage.pos = shape.pos;
-        afterimage.pos = lerp(afterimage.pos, shape.pos, 1-timer);
-        console.log(timer);
+        sample.pos = shape.pos;
+        // sample.pos = lerp(sample.pos, shape.pos, 1-timer);
+        //prevShapePos
+        console.log(sample);
     }
     
-    afterimage.alpha = 1 - (timer / secPerSample);
+    sample.alpha = 1 - (timer / secPerSample);
     
-    if(afterimage.pos != pastPos.a)
+    if(sample.pos != pastPos.a)
     {
         pastPos.b = pastPos.a;
-        pastPos.a = afterimage.pos;
+        pastPos.a = sample.pos;
         
         pastPos.delta = pastPos.a - pastPos.b;
         if (Math.abs(pastPos.delta) > 0.5)
@@ -113,18 +114,18 @@ function draw()
         circle(-xOffset + cos(shape.pos * TWO_PI) * rotationRadius, -sin(shape.pos * TWO_PI) * rotationRadius, shape.d);
         // signal's sampling circle
         fill("rgba(255,0,0," + 1 + ")");
-        circle(-xOffset + cos(afterimage.pos * TWO_PI) * rotationRadius, -sin(afterimage.pos * TWO_PI) * rotationRadius, shape.d);
+        circle(-xOffset + cos(sample.pos * TWO_PI) * rotationRadius, -sin(sample.pos * TWO_PI) * rotationRadius, shape.d);
         
         // solo sampling circle
-        fill("rgba(0,0,0," + afterimage.alpha + ")");
-        circle(cos(afterimage.pos * TWO_PI) * rotationRadius, -sin(afterimage.pos * TWO_PI) * rotationRadius, shape.d);
+        fill("rgba(0,0,0," + sample.alpha + ")");
+        circle(cos(sample.pos * TWO_PI) * rotationRadius, -sin(sample.pos * TWO_PI) * rotationRadius, shape.d);
         
         // reconstructed signal circle
         fill("rgba(0,0,0,1)");
         circle(xOffset + cos(reconstructed.pos * TWO_PI) * rotationRadius, -sin(reconstructed.pos * TWO_PI) * rotationRadius, shape.d);
         // reconstructed signal's sampling circle
-        fill("rgba(0,0,0," + afterimage.alpha + ")");
-        circle(xOffset + cos(afterimage.pos * TWO_PI) * rotationRadius, -sin(afterimage.pos * TWO_PI) * rotationRadius, shape.d);
+        fill("rgba(0,0,0," + sample.alpha + ")");
+        circle(xOffset + cos(sample.pos * TWO_PI) * rotationRadius, -sin(sample.pos * TWO_PI) * rotationRadius, shape.d);
     pop();
     
     
