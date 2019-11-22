@@ -93,8 +93,6 @@ function draw()
     
     reconstructed.pos = lerp(pastPos.a, pastPos.a + pastPos.delta, timer/secPerSample) % 1;
     
-    console.log("delta = " + pastPos.delta.toPrecision(2) + "\ta = " + pastPos.a.toPrecision(2) + "\tb = " + pastPos.b.toPrecision(2));
-    
     
     
     // draw
