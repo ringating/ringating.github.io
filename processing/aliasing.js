@@ -33,8 +33,8 @@ var sample =
 
 var reconstructed = 
 {
-    pos:0,
-    speed:0
+    pos: 0,
+    cyclesPerSec: 0
 }
 
 var pastPos = 
@@ -95,20 +95,18 @@ function draw()
     
     reconstructed.pos = lerp(pastPos.a, pastPos.a + pastPos.delta, timer/secPerSample) % 1;
     
+    reconstructed.cyclesPerSec = pastPos.delta * samplesPerSec;
     
     
     // draw
     background(255);
     textAlign(LEFT, TOP);
-    // text(dt.toPrecision(5),0,0);
-    // text(timer,0,0);
     if(fpsTimer > secPerFPSUpdate)
     {
         drawnFPS = fps.toPrecision(3);
         fpsTimer %= secPerFPSUpdate;
     }
-        
-    text(drawnFPS,0,0);
+    text(drawnFPS,1,1);
     
     push();
         noStroke();
@@ -116,8 +114,13 @@ function draw()
         
         textAlign(CENTER, CENTER);
         textSize(32);
-        
-        text("cycles per sec: " + cyclesPerSec + "\nsamples per sec: " + samplesPerSec, 0, 340);
+        text("cycles per sec: " + cyclesPerSec, -xOffset, 320);
+        text("samples per sec: " + samplesPerSec, 0, 320);
+        text("cycles per sec: " + Math.round(reconstructed.cyclesPerSec*1000)/1000, xOffset, 320);
+        textSize(20);
+        text("(adjust with up/down arrows)", -xOffset, 354);
+        text("(adjust with left/right arrows)", 0, 354);
+        text("interpreted from sampled positions", xOffset, 354);
         
         // signal circle
         fill("rgba(0,0,0,1)");
