@@ -49,7 +49,7 @@ var pastPos =
 
 function setup()
 {
-	frameRate(2);
+	frameRate(30);
 	createCanvas(windowWidth, windowHeight);
 	background(255);
 }
@@ -68,9 +68,10 @@ function draw()
     timer += dt;
     if(timer > secPerSample)
     {
-        timer = timer - secPerSample;
+        timer %= secPerSample;
         // afterimage.pos = shape.pos;
         afterimage.pos = lerp(afterimage.pos, shape.pos, 1-timer);
+        console.log(timer);
     }
     
     afterimage.alpha = 1 - (timer / secPerSample);
@@ -95,7 +96,8 @@ function draw()
     // draw
     background(255);
     textAlign(LEFT, TOP);
-    text(dt.toPrecision(5),0,0);
+    // text(dt.toPrecision(5),0,0);
+    text(timer,0,0);
     
     push();
         noStroke();
@@ -110,7 +112,7 @@ function draw()
         fill("rgba(0,0,0,1)");
         circle(-xOffset + cos(shape.pos * TWO_PI) * rotationRadius, -sin(shape.pos * TWO_PI) * rotationRadius, shape.d);
         // signal's sampling circle
-        fill("rgba(0,0,0," + afterimage.alpha + ")");
+        fill("rgba(255,0,0," + 1 + ")");
         circle(-xOffset + cos(afterimage.pos * TWO_PI) * rotationRadius, -sin(afterimage.pos * TWO_PI) * rotationRadius, shape.d);
         
         // solo sampling circle
