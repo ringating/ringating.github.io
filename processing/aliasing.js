@@ -1,4 +1,5 @@
 // options
+
 var cyclesPerSec = 2;
 var samplesPerSec = 2.2;
 var rotationRadius = 200;
@@ -6,6 +7,7 @@ var xOffset = 600;
 
 
 // variables, will change programatically
+
 var fps = 60;
 var framesUntilUpdate = (1/samplesPerSec) * fps;
 var frameCounter = 0;
@@ -38,10 +40,12 @@ var pastPos =
 {
     a:0,
     b:0,
-    e:0, // for extrapolated
-    delta:0 // difference between a and b, used to get c
+    delta:0, // difference between a and b, used to get c
+    s:0
 }
 
+
+// p5js callbacks
 
 function setup()
 {
@@ -64,14 +68,6 @@ function draw()
     shape.pos += shape.speed;
     shape.pos %= 1;
     
-    // frameCounter++;
-    // if(frameCounter >= framesUntilUpdate)
-    // {
-        // frameCounter = 0;
-        // afterimage.pos = shape.pos;
-        // afterimage.alpha = 1;
-    // }
-    
     timer += dt;
     if(timer >= secPerSample)
     {
@@ -82,16 +78,22 @@ function draw()
     
     afterimage.alpha -= afterimage.delta;
     
-    // reconstructed.pos += reconstructed.speed;
     if(afterimage.pos != pastPos.a)
     {
         pastPos.b = pastPos.a;
         pastPos.a = afterimage.pos;
+        
         pastPos.delta = pastPos.a - pastPos.b;
-        pastPos.c = pastPos.a + pastPos.delta;
+        if (Math.abs(pastPos.delta) > 0.5)
+        {
+            pastPos.s = -pastPos.delta / abs(pastPos.delta);
+            pastPos.delta = ( mod1( pastPos.delta * pastPos.s ) ) * pastPos.s; 
+        }
     }
     
     reconstructed.pos = lerp(pastPos.a, pastPos.a + pastPos.delta, timer/secPerSample) % 1;
+    
+    console.log("delta = " + pastPos.delta.toPrecision(2) + "\ta = " + pastPos.a.toPrecision(2) + "\tb = " + pastPos.b.toPrecision(2));
     
     
     
@@ -128,4 +130,13 @@ function draw()
     
     
     
+}
+
+
+// r mod 1, behaves the way google's calculator does (js's % doesn't work this way)
+function mod1(r)
+{
+    if(r < 0)
+        return 1+(r%1);
+    return r%1;
 }
