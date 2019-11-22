@@ -113,10 +113,15 @@ function draw()
         translate(windowWidth/2,windowHeight/2);
         
         textAlign(CENTER, CENTER);
+        
         textSize(32);
         text("cycles per sec: " + cyclesPerSec, -xOffset, 320);
         text("samples per sec: " + samplesPerSec, 0, 320);
-        text("cycles per sec: " + Math.round(reconstructed.cyclesPerSec*1000)/1000, xOffset, 320);
+        text("cycles per sec:", xOffset - 30, 320);
+        textAlign(LEFT, CENTER);
+        text("" + Math.round(reconstructed.cyclesPerSec*1000)/1000, xOffset + 85, 320);
+        
+        textAlign(CENTER, CENTER);
         textSize(20);
         text("(adjust with up/down arrows)", -xOffset, 354);
         text("(adjust with left/right arrows)", 0, 354);
