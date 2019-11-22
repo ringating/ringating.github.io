@@ -75,7 +75,6 @@ function draw()
         sample.pos = shape.pos;
         // sample.pos = lerp(sample.pos, shape.pos, 1-timer);
         //prevShapePos
-        console.log(sample);
     }
     
     sample.alpha = 1 - (timer / secPerSample);
