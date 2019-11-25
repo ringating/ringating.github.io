@@ -60,6 +60,7 @@ function draw()
     // update framerate-related stuff
     dt = deltaTime/1000;
     fps = 1/dt;
+    samplesPerSec = Math.max(samplesPerSec, 0);
     secPerSample = 1/samplesPerSec;
     fpsTimer += dt;
     
@@ -118,7 +119,7 @@ function draw()
         text("samples per sec: " + samplesPerSec, 0, 320);
         text("cycles per sec:", xOffset - 30, 320);
         textAlign(LEFT, CENTER);
-        text(reconstructed.cyclesPerSec.toPrecision(getPrecision(cyclesPerSec)), xOffset + 85, 320);
+        text(toOneDecimalPlace("" + reconstructed.cyclesPerSec), xOffset + 85, 320);
         
         textAlign(CENTER, CENTER);
         textSize(20);
@@ -177,14 +178,28 @@ function mod1(r)
     return r%1;
 }
 
-// this only works since the values it's called on can only be adjusted in 1/10 increments
-function getPrecision(num)
+function toOneDecimalPlace(numStr)
 {
-    var numStr = ""+num;
-    var prec = numStr.length;
-    if(numStr.indexOf('0') == 0)
-        prec--;
+    var retStr;
     if(numStr.indexOf('.') >= 0)
-        prec--;
-    return prec;
+    {
+        retStr = numStr.slice(0, numStr.indexOf('.') + 2);
+    }
+    else
+    {
+        retStr = numStr;
+    }
+    return retStr;
 }
+
+// this only works since the values it's called on can only be adjusted in 1/10 increments
+// function getPrecision(num)
+// {
+    // var numStr = ""+num;
+    // var prec = numStr.length;
+    // if(numStr.indexOf('0') == 0)
+        // prec--;
+    // if(numStr.indexOf('.') >= 0)
+        // prec--;
+    // return prec;
+// }
