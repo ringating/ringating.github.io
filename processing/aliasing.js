@@ -1,3 +1,33 @@
+class TemporalPoint
+{
+    constructor(value, currentTime)
+    {
+        this.value = value;
+        this.time = currentTime;
+    }
+}
+
+class TemporalCurve
+{
+    constructor()
+    {
+        this.points = new Array();
+    }
+    
+    addPoint(value, currentTime)
+    {
+        this.points.push(new TemporalPoint(value, currentTime));
+    }
+    
+    cullPointsOlderThan(age, currentTime)
+    {
+        while(currentTime - points[0].time > age)
+        {
+            points.shift();
+        }
+    }
+}
+
 // options
 
 var cyclesPerSec = .5;
@@ -5,10 +35,12 @@ var samplesPerSec = 2;
 var rotationRadius = 200;
 var xOffset = 600;
 var secPerFPSUpdate = .1;
+var curveAge = 2;
 
 
 // variables, will change programatically
 
+var timeSinceStart = 0;
 var fps = 60;
 var dt = 1/60; // deltaTime, but in seconds
 
@@ -45,6 +77,9 @@ var pastPos =
     s:0
 }
 
+var realCurve = new TemporalCurve();
+var sampledCurve = new TemporalCurve();
+
 
 // p5js callbacks
 
@@ -59,13 +94,14 @@ function draw()
 {
     // update framerate-related stuff
     dt = deltaTime/1000;
+    timeSinceStart += dt;
     fps = 1/dt;
     samplesPerSec = Math.max(samplesPerSec, 0);
     secPerSample = 1/samplesPerSec;
     fpsTimer += dt;
     
     
-    // update states
+    // update states of circles
     shape.speed = cyclesPerSec/fps;
     shape.pos = mod1(shape.pos + shape.speed);
     
@@ -96,6 +132,15 @@ function draw()
     reconstructed.pos = lerp(pastPos.a, pastPos.a + pastPos.delta, timer/secPerSample) % 1;
     
     reconstructed.cyclesPerSec = pastPos.delta * samplesPerSec;
+    
+    
+    // update states of curves
+    realCurve.addPoint(-sin(shape.pos * TWO_PI), dt);
+    realCurve.cullPointsOlderThan(curveAge, dt);
+    
+    sampledCurve.addPoint(-sin(reconstructed.pos * TWO_PI), dt);
+    sampledCurve.cullPointsOlderThan(curveAge, dt);
+    
     
     
     // draw
@@ -203,3 +248,20 @@ function toOneDecimalPlace(numStr)
         // prec--;
     // return prec;
 // }
+
+
+function drawTemporalCurve(xOffset, yOffset, width, height, tCurve, amplitude, timeWindow, currentTime)
+{
+    beginShape();
+    
+    for(let i = 0; i < tCurve.points.length; ++i)
+    {
+        curveVertex
+        (
+            map(tCurve.points[i].time, currentTime - timeWindow, currentTime, xOffset - width/2, xOffset + width/2),
+            map(tCurve.points[i].value, -amplitude, amplitude, yOffset - height/2, yOffset + height/2)
+        );
+    }
+    
+    endShape();
+}
