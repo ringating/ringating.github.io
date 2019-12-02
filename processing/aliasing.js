@@ -21,9 +21,9 @@ class TemporalCurve
     
     cullPointsOlderThan(age, currentTime)
     {
-        while(currentTime - points[0].time > age)
+        while(currentTime - this.points[0].time > age)
         {
-            points.shift();
+            this.points.shift();
         }
     }
 }
@@ -79,6 +79,7 @@ var pastPos =
 
 var realCurve = new TemporalCurve();
 var sampledCurve = new TemporalCurve();
+var onlySamplePoints = new TemporalCurve();
 
 
 // p5js callbacks
@@ -135,11 +136,11 @@ function draw()
     
     
     // update states of curves
-    realCurve.addPoint(-sin(shape.pos * TWO_PI), dt);
-    realCurve.cullPointsOlderThan(curveAge, dt);
+    realCurve.addPoint(-sin(shape.pos * TWO_PI), timeSinceStart);
+    realCurve.cullPointsOlderThan(curveAge, timeSinceStart);
     
-    sampledCurve.addPoint(-sin(reconstructed.pos * TWO_PI), dt);
-    sampledCurve.cullPointsOlderThan(curveAge, dt);
+    sampledCurve.addPoint(-sin(reconstructed.pos * TWO_PI), timeSinceStart);
+    sampledCurve.cullPointsOlderThan(curveAge, timeSinceStart);
     
     
     
@@ -189,9 +190,16 @@ function draw()
         // reconstructed signal's sampling circle
         fill("rgba(126,69,183," + sample.alpha + ")");
         circle(xOffset + cos(sample.pos * TWO_PI) * rotationRadius, -sin(sample.pos * TWO_PI) * rotationRadius, shape.d);
+        
+        noFill();
+        stroke(0);
+        strokeWeight(2);
+        drawTemporalCurve(-xOffset, -350, 400, 100, realCurve,    1, curveAge, timeSinceStart);
+        drawTemporalCurve( xOffset, -350, 400, 100, sampledCurve, 1, curveAge, timeSinceStart);
+        stroke("rgba(0,0,0,0.333)");
+        noFill();
+        drawTemporalCurve( xOffset, -350, 400, 100, realCurve,    1, curveAge, timeSinceStart);
     pop();
-    
-    
     
 }
 
