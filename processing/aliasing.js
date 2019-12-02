@@ -30,8 +30,8 @@ class TemporalCurve
 
 // options
 
-var cyclesPerSec = .5;
-var samplesPerSec = 2;
+var cyclesPerSec = 1;
+var samplesPerSec = 1;
 var rotationRadius = 200;
 var xOffset = 600;
 var secPerFPSUpdate = .1;
@@ -202,11 +202,16 @@ function draw()
         
         // wave stuff
         noFill();
-        stroke(0);
+        stroke("rgba(0,0,0,0.12)");
         strokeWeight(2);
+        rectMode(CENTER);
+        rect(-xOffset, -350, 400, 100);
+        rect( xOffset, -350, 400, 100);
+        rect(       0, -350, 400, 100);
+        stroke(0);
         drawTemporalCurve(-xOffset, -350, 400, 100, realCurve,    1, curveAge, timeSinceStart);
         drawTemporalCurve( xOffset, -350, 400, 100, sampledCurve, 1, curveAge, timeSinceStart);
-        stroke("rgba(0,0,0,0.25)");
+        stroke("rgba(0,0,0,0.32)");
         noFill();
         drawTemporalCurve( xOffset, -350, 400, 100, realCurve,    1, curveAge, timeSinceStart);
         stroke("rgba(126,69,183,0.75)");
