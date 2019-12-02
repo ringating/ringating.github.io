@@ -21,7 +21,7 @@ class TemporalCurve
     
     cullPointsOlderThan(age, currentTime)
     {
-        while(currentTime - this.points[0].time > age)
+        while(this.points.length > 0 && currentTime - this.points[0].time > age)
         {
             this.points.shift();
         }
@@ -80,6 +80,7 @@ var pastPos =
 var realCurve = new TemporalCurve();
 var sampledCurve = new TemporalCurve();
 var onlySamplePoints = new TemporalCurve();
+var addSamplePoint = false;
 
 
 // p5js callbacks
@@ -113,6 +114,7 @@ function draw()
         sample.pos = shape.pos;
         // sample.pos = lerp(sample.pos, shape.pos, 1-timer);
         //prevShapePos
+        addSamplePoint = true;
     }
     
     sample.alpha = 1 - (timer / secPerSample);
@@ -141,6 +143,13 @@ function draw()
     
     sampledCurve.addPoint(-sin(reconstructed.pos * TWO_PI), timeSinceStart);
     sampledCurve.cullPointsOlderThan(curveAge, timeSinceStart);
+    
+    if(addSamplePoint)
+    {
+        addSamplePoint = false;
+        onlySamplePoints.addPoint(-sin(sample.pos * TWO_PI), timeSinceStart);
+    }
+    onlySamplePoints.cullPointsOlderThan(curveAge, timeSinceStart);
     
     
     
@@ -191,14 +200,23 @@ function draw()
         fill("rgba(126,69,183," + sample.alpha + ")");
         circle(xOffset + cos(sample.pos * TWO_PI) * rotationRadius, -sin(sample.pos * TWO_PI) * rotationRadius, shape.d);
         
+        // wave stuff
         noFill();
         stroke(0);
         strokeWeight(2);
         drawTemporalCurve(-xOffset, -350, 400, 100, realCurve,    1, curveAge, timeSinceStart);
         drawTemporalCurve( xOffset, -350, 400, 100, sampledCurve, 1, curveAge, timeSinceStart);
-        stroke("rgba(0,0,0,0.333)");
+        stroke("rgba(0,0,0,0.25)");
         noFill();
         drawTemporalCurve( xOffset, -350, 400, 100, realCurve,    1, curveAge, timeSinceStart);
+        stroke("rgba(126,69,183,0.75)");
+        strokeWeight(10);
+        drawTemporalCurvePoints( xOffset, -350, 400, 100, onlySamplePoints, 1, curveAge, timeSinceStart);
+        drawTemporalCurvePoints(-xOffset, -350, 400, 100, onlySamplePoints, 1, curveAge, timeSinceStart);
+        drawTemporalCurvePoints(       0, -350, 400, 100, onlySamplePoints, 1, curveAge, timeSinceStart);
+        stroke(0);
+        drawTemporalCurveHead(-xOffset, -350, 400, 100, realCurve,    1, curveAge, timeSinceStart);
+        drawTemporalCurveHead( xOffset, -350, 400, 100, sampledCurve, 1, curveAge, timeSinceStart);
     pop();
     
 }
@@ -272,4 +290,25 @@ function drawTemporalCurve(xOffset, yOffset, width, height, tCurve, amplitude, t
     }
     
     endShape();
+}
+
+function drawTemporalCurvePoints(xOffset, yOffset, width, height, tCurve, amplitude, timeWindow, currentTime)
+{
+    for(let i = 0; i < tCurve.points.length; ++i)
+    {
+        point
+        (
+            map(tCurve.points[i].time, currentTime - timeWindow, currentTime, xOffset - width/2, xOffset + width/2),
+            map(tCurve.points[i].value, -amplitude, amplitude, yOffset - height/2, yOffset + height/2)
+        );
+    }
+}
+
+function drawTemporalCurveHead(xOffset, yOffset, width, height, tCurve, amplitude, timeWindow, currentTime)
+{
+    point
+    (
+        map(tCurve.points[tCurve.points.length-1].time, currentTime - timeWindow, currentTime, xOffset - width/2, xOffset + width/2),
+        map(tCurve.points[tCurve.points.length-1].value, -amplitude, amplitude, yOffset - height/2, yOffset + height/2)
+    );
 }
