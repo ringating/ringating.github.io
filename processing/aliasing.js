@@ -174,7 +174,7 @@ function draw()
         text("samples per sec: " + samplesPerSec, 0, 320);
         text("cycles per sec:", xOffset - 30, 320);
         textAlign(LEFT, CENTER);
-        text(toOneDecimalPlace("" + reconstructed.cyclesPerSec), xOffset + 85, 320);
+        text(Math.round(reconstructed.cyclesPerSec * 10)/10, xOffset + 85, 320);
         
         textAlign(CENTER, CENTER);
         textSize(20);
@@ -254,19 +254,19 @@ function mod1(r)
     return r%1;
 }
 
-function toOneDecimalPlace(numStr)
-{
-    var retStr;
-    if(numStr.indexOf('.') >= 0)
-    {
-        retStr = numStr.slice(0, numStr.indexOf('.') + 2);
-    }
-    else
-    {
-        retStr = numStr;
-    }
-    return retStr;
-}
+// function toOneDecimalPlace(numStr)
+// {
+    // var retStr;
+    // if(numStr.indexOf('.') >= 0)
+    // {
+        // retStr = numStr.slice(0, numStr.indexOf('.') + 2);
+    // }
+    // else
+    // {
+        // retStr = numStr;
+    // }
+    // return retStr;
+// }
 
 // this only works since the values it's called on can only be adjusted in 1/10 increments
 // function getPrecision(num)
