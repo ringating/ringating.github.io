@@ -222,5 +222,6 @@ function draw()
 	textAlign(LEFT, CENTER);
 	textSize(64);
 	fill(0);
-	text("state: " + myFSM.currentState, canvas.width/2-240, canvas.height/2);
+	//text("state: " + myFSM.currentState, canvas.width/2-240, canvas.height/2);
+    text("state: " + myFSM.currentState, 0, 140);
 }
