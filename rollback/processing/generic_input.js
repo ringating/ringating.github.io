@@ -1,17 +1,25 @@
-var north;
-var south;
-var east;
-var west;
+let body = document.getElementById("asdf");
 
-var up;
-var down;
-var left;
-var right;
+body.addEventListener("keydown", (e)=> 
+{
+    if (!e.repeat)
+        console.log(`Key "${e.key}" pressed  [event: keydown]`);
+});
 
-var w;
-var a;
-var s;
-var d;
+var north = false;
+var south = false;
+var east = false;
+var west = false;
+
+var up = false;
+var down = false;
+var left = false;
+var right = false;
+
+var w = false;
+var a = false;
+var s = false;
+var d = false;
 
 function keyPressed()
 {
