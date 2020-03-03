@@ -1,10 +1,13 @@
 let body = document.getElementById("asdf");
 
-body.addEventListener("keydown", (e)=> 
+document.onload = function()
 {
-    if (!e.repeat)
-        console.log(`Key "${e.key}" pressed  [event: keydown]`);
-});
+    body.addEventListener("keydown", (e)=> 
+    {
+        if (!e.repeat)
+            console.log(`Key "${e.key}" pressed  [event: keydown]`);
+    });
+}
 
 var north = false;
 var south = false;
