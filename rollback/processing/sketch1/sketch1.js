@@ -40,9 +40,9 @@ function draw()
 {
     image(img_bg, 0, 0);
     
-    if(keyIsDown(37))
+    if(keyIsDown(37) && !keyIsDown(39))
         image(img_input_left,0,0);
-    if(keyIsDown(39))
+    if(keyIsDown(39) && !keyIsDown(37))
         image(img_input_right,0,0);
     if( !(keyIsDown(37)||keyIsDown(39)) || (keyIsDown(37)&&keyIsDown(39)))
         image(img_input_neutral,0,0);
