@@ -24,7 +24,7 @@ function preload()
     img_input_left      = loadImage("input-left.png");
     img_input_neutral   = loadImage("input-neutral.png");
     img_input_right     = loadImage("input-right.png");
-    img_render_glow     = loadImage("render-glow");
+    img_render_glow     = loadImage("render-glow.png");
     img_render_guy      = loadImage("render-guy.png");
     img_update_glow     = loadImage("update-glow.png");
 }
