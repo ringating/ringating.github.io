@@ -53,6 +53,7 @@ function draw()
     {
         tickFrameCount = 0;
         currState = (currState+1)%3;
+        console.log("currState = " + currState);
     }
     
     switch (currState) 
