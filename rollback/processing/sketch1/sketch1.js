@@ -7,13 +7,13 @@ var tickDuration = 20; // in frames
 var tickFrameCount = 0;
 var currState = 0;
 
-var curr_prevState;
-var curr_nextState;
-var curr_input;
+var curr_prevState = 5;
+var curr_nextState = 5;
+var curr_input = 0;
 
-var next_input;
+var next_input = 0;
 
-var render_state;
+var render_state = 5;
 
 var inputText = "e";
 
