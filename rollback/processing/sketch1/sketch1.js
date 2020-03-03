@@ -1,7 +1,7 @@
 var winWidth = 323;
 var winHeight = 297;
 
-var paused = true;
+var paused = false;
 
 var tickDuration = 30; // in frames
 var tickFrameCount = 0;
