@@ -4,6 +4,13 @@ var winHeight = 297;
 
 var tickDuration = 20; // in frames
 var tickFrameCount = 0;
+var currState
+
+var curr_prevState;
+var curr_nextState;
+var curr_input;
+
+var next_input;
 
 var img_bg;
 var img_input_glow;
@@ -40,12 +47,32 @@ function draw()
 {
     image(img_bg, 0, 0);
     
-    if(keyIsDown(37) && !keyIsDown(39))
-        image(img_input_left,0,0);
-    if(keyIsDown(39) && !keyIsDown(37))
-        image(img_input_right,0,0);
-    if( !(keyIsDown(37)||keyIsDown(39)) || (keyIsDown(37)&&keyIsDown(39)))
-        image(img_input_neutral,0,0);
+    tickFrameCount++;
+    
+    if(tickFrameCount >= tickDuration)
+    {
+        tickFrameCount = 0;
+        currState = (currState+1)%3;
+    }
+    
+    switch (currState) 
+    {
+        case 0: // update
+            image(img_update_glow,0,0);
+            break;
+        case 1: // render
+            image(img_render_glow,0,0);
+            break;
+        case 2: // input
+            image(img_input_glow,0,0);
+            if(keyIsDown(37) && !keyIsDown(39))
+                image(img_input_left,0,0);
+            if(keyIsDown(39) && !keyIsDown(37))
+                image(img_input_right,0,0);
+            if( !(keyIsDown(37)||keyIsDown(39)) || (keyIsDown(37)&&keyIsDown(39)))
+                image(img_input_neutral,0,0);
+            break;
+    }
 }
 
 function keyPressed()
