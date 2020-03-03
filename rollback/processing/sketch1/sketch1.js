@@ -96,8 +96,9 @@ function keyPressed()
             break;
         case 37: // left arrow
             break;
-        case 32: // spacebar
+        case 13: // enter
             paused  = !paused;
+            console.log("toggling pause");
             break;
     }
 }
