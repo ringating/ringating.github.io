@@ -13,6 +13,14 @@ var curr_input;
 
 var next_input;
 
+var render_state;
+
+var inputText = "e";
+
+var guy_x_at_1 = 64;
+var guy_x = guy_x_at_1;
+var guy_y = 95;
+
 var img_bg;
 var img_input_glow;
 var img_input_left;
@@ -42,6 +50,7 @@ function setup()
 	frameRate(60);
 	createCanvas(winWidth, winHeight);
 	background(255);
+    textAlign(LEFT, BOTTOM);
 }
 
 function draw() 
@@ -67,21 +76,58 @@ function draw()
     switch (currState) 
     {
         case 0: // update
+            if(tickFrameCount == 0)
+            {
+                // do once per cycle
+                curr_input = next_input;
+                curr_prevState = curr_nextState;
+                curr_nextState = Math.min(Math.max(curr_prevState + curr_input, 1), 9);
+                
+                switch(curr_input)
+                {
+                    case -1:
+                        inputText = "◄";
+                        break;
+                    case 0:
+                        inputText = "■";
+                        break;
+                    case 1:
+                        inputText = "►";
+                        break;
+                }
+            }
             image(img_update_glow,0,0);
             break;
+            
         case 1: // render
             image(img_render_glow,0,0);
             break;
+            
         case 2: // input
             image(img_input_glow,0,0);
             if(keyIsDown(37) && !keyIsDown(39))
+            {
                 image(img_input_left,0,0);
+                next_input = -1;
+            }
             if(keyIsDown(39) && !keyIsDown(37))
+            {
                 image(img_input_right,0,0);
+                next_input = 1;
+            }
             if( !(keyIsDown(37)||keyIsDown(39)) || (keyIsDown(37)&&keyIsDown(39)))
+            {
                 image(img_input_neutral,0,0);
+                next_input = 0;
+            }
             break;
     }
+    
+    image(img_render_guy, guy_x, guy_y);
+    
+    text(""+curr_prevState, 42, 269);
+    text(inputText, 87, 269);
+    text(""+curr_nextState, 132, 269);
 }
 
 function keyPressed()
@@ -98,7 +144,7 @@ function keyPressed()
             break;
         case 13: // enter
             paused  = !paused;
-            console.log("toggling pause");
+            //console.log("toggling pause");
             break;
     }
 }
