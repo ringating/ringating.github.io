@@ -58,7 +58,7 @@ function draw()
     
     if(paused)
     {
-        tickFrameCount = 0;
+        tickFrameCount = 1;
     }
     else
     {
