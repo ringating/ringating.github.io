@@ -127,7 +127,7 @@ function draw()
     
     text(""+curr_prevState, 46, 272);
     text(inputText, 91, 269);
-    text(""+curr_nextState, 134, 272);
+    text(""+curr_nextState, 136, 272);
 }
 
 function keyPressed()
