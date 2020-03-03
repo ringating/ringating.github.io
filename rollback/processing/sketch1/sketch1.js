@@ -4,7 +4,7 @@ var winHeight = 297;
 
 var tickDuration = 20; // in frames
 var tickFrameCount = 0;
-var currState
+var currState = 0;
 
 var curr_prevState;
 var curr_nextState;
