@@ -18,7 +18,6 @@ var render_state = 5;
 var inputText = "e";
 
 var guy_x_at_1 = 64;
-var guy_x = guy_x_at_1;
 var guy_y = 95;
 
 var img_bg;
@@ -100,6 +99,7 @@ function draw()
             break;
             
         case 1: // render
+            render_state = curr_nextState;
             image(img_render_glow,0,0);
             break;
             
@@ -123,7 +123,7 @@ function draw()
             break;
     }
     
-    image(img_render_guy, guy_x, guy_y);
+    image(img_render_guy, guy_x_at_1 + 19*(render_state-1), guy_y);
     
     text(""+curr_prevState, 42, 269);
     text(inputText, 87, 269);
