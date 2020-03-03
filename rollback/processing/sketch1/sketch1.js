@@ -1,6 +1,7 @@
-
 var winWidth = 323;
 var winHeight = 297;
+
+var paused = false;
 
 var tickDuration = 20; // in frames
 var tickFrameCount = 0;
@@ -47,13 +48,20 @@ function draw()
 {
     image(img_bg, 0, 0);
     
-    tickFrameCount++;
-    
-    if(tickFrameCount >= tickDuration)
+    if(paused)
     {
         tickFrameCount = 0;
-        currState = (currState+1)%3;
-        console.log("currState = " + currState);
+    }
+    else
+    {
+        tickFrameCount++;
+    
+        if(tickFrameCount >= tickDuration)
+        {
+            tickFrameCount = 0;
+            currState = (currState+1)%3;
+            //console.log("currState = " + currState);
+        }
     }
     
     switch (currState) 
@@ -87,6 +95,9 @@ function keyPressed()
         case 39: // right arrow
             break;
         case 37: // left arrow
+            break;
+        case 32: // spacebar
+            paused  = !paused;
             break;
     }
 }
