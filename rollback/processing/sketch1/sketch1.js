@@ -3,7 +3,7 @@ var winHeight = 297;
 
 var paused = true;
 
-var tickDuration = 20; // in frames
+var tickDuration = 30; // in frames
 var tickFrameCount = 0;
 var currState = 0;
 
@@ -125,9 +125,9 @@ function draw()
     
     image(img_render_guy, guy_x_at_1 + 19*(render_state-1), guy_y);
     
-    text(""+curr_prevState, 42, 269);
-    text(inputText, 87, 269);
-    text(""+curr_nextState, 132, 269);
+    text(""+curr_prevState, 46, 272);
+    text(inputText, 91, 269);
+    text(""+curr_nextState, 134, 272);
 }
 
 function keyPressed()
