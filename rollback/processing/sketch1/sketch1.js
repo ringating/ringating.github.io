@@ -2,15 +2,31 @@
 var winWidth = 323;
 var winHeight = 297;
 
-tickDuration = 20; // in frames
+var tickDuration = 20; // in frames
+var tickFrameCount = 0;
 
 var img_bg;
+var img_input_glow;
+var img_input_left;
+var img_input_neutral;
+var img_input_right;
+var img_render_glow;
+var img_render_guy;
+var img_update_glow;
+
 
 // p5js callbacks
 
 function preload()
 {
-    img_bg = loadImage("bg.png");
+    img_bg              = loadImage("bg.png");
+    img_input_glow      = loadImage("input-glow.png");
+    img_input_left      = loadImage("input-left.png");
+    img_input_neutral   = loadImage("input-neutral.png");
+    img_input_right     = loadImage("input-right.png");
+    img_render_glow     = loadImage("render-glow");
+    img_render_guy      = loadImage("render-guy.png");
+    img_update_glow     = loadImage("update-glow.png");
 }
 
 function setup()
@@ -22,10 +38,14 @@ function setup()
 
 function draw() 
 {
-    background(0);
-    fill(255);
-    circle(winWidth/2, winHeight/2, winHeight/4);
     image(img_bg, 0, 0);
+    
+    if(keyIsDown(37))
+        image(img_input_left,0,0);
+    if(keyIsDown(39))
+        image(img_input_right,0,0);
+    if( !(keyIsDown(37)||keyIsDown(39)) || (keyIsDown(37)&&keyIsDown(39)))
+        image(img_input_neutral,0,0);
 }
 
 function keyPressed()
