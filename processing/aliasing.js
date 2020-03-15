@@ -88,7 +88,7 @@ var addSamplePoint = false;
 function setup()
 {
 	frameRate(999);
-	createCanvas(windowWidth, windowHeight);
+	createCanvas(1920, 960);
 	background(255);
 }
 
