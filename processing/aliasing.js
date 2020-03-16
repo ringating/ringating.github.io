@@ -87,8 +87,9 @@ var addSamplePoint = false;
 
 function setup()
 {
-	frameRate(999);
-	createCanvas(1920, 960);
+    frameRate(999);
+	let c = createCanvas(1920, 960);
+    c.elt.style = 'max-width: 100%; max-height: 100%;';
 	background(255);
 }
 
