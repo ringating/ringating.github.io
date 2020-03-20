@@ -186,7 +186,7 @@ var myp5 = new p5( function( sketch )
 		sketch.text(hybridDelayFrames + " frames  ◄ ►\n" + (delayFrames - hybridDelayFrames) + " frames", 186, 44);
 		sketch.textSize(28);
 		sketch.textStyle(sketch.BOLD);
-		sketch.text("delay (lockstep)", lvlWidth/2 + 12, 8);
+		sketch.text("delay", lvlWidth/2 + 12, 8);
 		sketch.textStyle(sketch.NORMAL);
 		sketch.textSize(20);
 		sketch.text("input buffer: " + delayFrames + " frames", lvlWidth/2 + 12, 44);
