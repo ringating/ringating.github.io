@@ -69,6 +69,28 @@
                     <p style="text-align: center;">try recording a replay
                     
                     <img class="image center" src="images/placeholder-WIP.png" alt=""/></p><br>
+                    
+                    <p>Just like playing back a replay, if both players of a deterministic fighting game have the same sequence of inputs then their games will look identical and stay synchronized.  This idea is known as "lockstep" and is the foundation of netcode for all modern fighting games.</p>
+                    
+                    <p>So, is lockstep alone a sufficient solution for fighting game netcode?  Each player's game requires both players' inputs in order to move to the next frame, so as long as those inputs arrive quickly there should be no problems.  However, what happens when the amount of time needed for the inputs to be sent and received exceeds the amount of time between frames?</p>
+                    
+                    <p style="text-align: center;">[...]
+                    
+                    <img class="image center" src="images/placeholder-WIP.png" alt=""/></p><br>
+                    
+                    <p>Yeah, ew.  Unless the connection between the players is stellar, naive lockstep just doesn't cut it.  We need some way to move on to the next frame without having to wait for brand new input.</p>
+                    
+                    <p style="text-align: center;">[...]
+                    
+                    <img class="image center" src="images/placeholder-WIP.png" alt=""/></p><br>
+                    
+                    <p>Hey, now this works.  What's changed?  In order to avoid having to wait for brand new inputs for every frame, we now collect and delay the local player's inputs for 5 frames (83 ms) in order to give the remote player's input time to arrive.  The result is that any network latency under 83 ms will no longer affect how the game feels.  This is a huge improvement over naive lockstep, since now all we have to do to make the game playable on any given connection is increase the delay until it works... right?</p>
+                    
+                    <p style="text-align: center;">[...]
+                    
+                    <img class="image center" src="images/placeholder-WIP.png" alt=""/></p><br>
+                    
+                    <p>[...]</p>
 
                 </div>
             </section>
