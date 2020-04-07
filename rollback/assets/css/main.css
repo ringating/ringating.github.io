@@ -1,5 +1,6 @@
 @import url(font-awesome.min.css);
 @import url(https://fonts.googleapis.com/css?family=Raleway:400,700);
+@import url(https://fonts.googleapis.com/css2?family=Nunito&display=swap);
 
 /*
 	Spatial by TEMPLATED
@@ -1602,7 +1603,8 @@
 	}
 
 	body, input, select, textarea {
-		font-family: "Raleway", Arial, Helvetica, sans-serif;
+		/* font-family: "Raleway", Arial, Helvetica, sans-serif; */
+        font-family: 'Nunito', sans-serif;
 		font-size: 13pt;
 		font-weight: 400;
 		line-height: 2em;
