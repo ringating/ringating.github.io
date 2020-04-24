@@ -85,8 +85,7 @@ function generateNextGameState(currentGameState, currentP1Input, currentP2Input)
 {
 	var nextGameState = new GameState();
 	
-    
-    
+    // TODO    
     
 	return nextGameState;
 }
@@ -130,14 +129,20 @@ function setup()
     textAlign(LEFT, BOTTOM);
 }
 
+var testState = new GameState();
+testState.p1.posX = 400;
+
+
 function draw() 
 {
     check_update_wobbly_frames();
-    image_wobbly("game_window", 0, 0);
-    image_wobbly("player_knockdown", 0, 0);
-    image_wobbly("player_launch_rising", 400, 140);
-    image_wobbly("player_launch_falling", 280, 120);
-    image_wobbly("player_launch_apex", 300, 0);
+    // image_wobbly("game_window", 0, 0);
+    // image_wobbly("player_knockdown", 0, 0);
+    // image_wobbly("player_launch_rising", 400, 140);
+    // image_wobbly("player_launch_falling", 280, 120);
+    // image_wobbly("player_launch_apex", 300, 0);
+    
+    draw_gamestate(testState);
 }
 
 function image_wobbly(spriteStr, xCoord, yCoord)
@@ -160,6 +165,52 @@ function check_update_wobbly_frames()
             }
         }
     }
+}
+
+function draw_gamestate(gamestate)
+{
+    push();
+        imageMode(CORNER);
+        image_wobbly("game_window", 0, 0);
+        translate(8,10);
+        imageMode(CENTER);
+        switch(gamestate.p1.state)
+        {
+            case ps.neutral:
+                image_wobbly("player_idle", gamestate.p1.posX, pyc(gamestate.p1.posY)); // incomplete, must also include walking
+                break;
+                
+            case ps.jumping:
+                if(gamestate.p1.velY > 0)
+                    image_wobbly("player_jump_rising", gamestate.p1.posX, pyc(gamestate.p1.posY));
+                else
+                    image_wobbly("player_jump_falling", gamestate.p1.posX, pyc(gamestate.p1.posY));
+                break;
+                
+            case ps.punching:
+                break;
+                
+            case ps.hitstun:
+                image_wobbly("player_hitstun", gamestate.p1.posX, pyc(gamestate.p1.posY));
+                break;
+                
+            case ps.launched:
+                break;
+                
+            case ps.knockdown:
+                image_wobbly("player_knockdown", gamestate.p1.posX, pyc(gamestate.p1.posY));
+                break;
+                
+            case ps.wakeup:
+                image_wobbly("player_wakeup", gamestate.p1.posX, pyc(gamestate.p1.posY));
+                break;
+        }
+    pop();
+}
+
+function pyc(rawY) // player y coordinate
+{
+    return gameHeight - (playerHeight/2 + rawY);
 }
 
 function getRandomInt(max)
