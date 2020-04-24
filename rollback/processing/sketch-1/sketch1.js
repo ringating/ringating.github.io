@@ -113,10 +113,23 @@ function generateNextGameState(currentGameState, currentP1Input, currentP2Input)
 
 function preload()
 {
-    game_window[0] = loadImage("http://whiffpunish.com/rollback/processing/assets/game-window/game-window-1.png");
+    game_window.push( loadImage("http://whiffpunish.com/rollback/processing/assets/game-window/game-window-1.png") );
     game_window.push( loadImage("http://whiffpunish.com/rollback/processing/assets/game-window/game-window-2.png") );
     game_window.push( loadImage("http://whiffpunish.com/rollback/processing/assets/game-window/game-window-3.png") );
     game_window.push( loadImage("http://whiffpunish.com/rollback/processing/assets/game-window/game-window-4.png") );
+    
+    for(let i = 0; i < 5; ++i)
+    {
+        player_hitstun.push( loadImage("http://whiffpunish.com/rollback/processing/assets/player-hitstun/player-hitstun-" + (i+1) + ".png") );
+        player_idle.push( loadImage("http://whiffpunish.com/rollback/processing/assets/player-idle/player-idle-" + (i+1) + ".png") );
+        player_knockdown.push( loadImage("http://whiffpunish.com/rollback/processing/assets/player-knockdown/player-knockdown-" + (i+1) + ".png") );
+        player_launch_apex.push( loadImage("http://whiffpunish.com/rollback/processing/assets/player-launch-apex/player-launch-apex-" + (i+1) + ".png") );
+        player_launch_falling.push( loadImage("http://whiffpunish.com/rollback/processing/assets/player-launch-falling/player-launch-falling-" + (i+1) + ".png") );
+        player_launch_rising.push( loadImage("http://whiffpunish.com/rollback/processing/assets/player-launch-rising/player-launch-rising-" + (i+1) + ".png") );
+        player_punch_anticipation.push( loadImage("http://whiffpunish.com/rollback/processing/assets/player-punch-anticipation/player-punch-anticipation-" + (i+1) + ".png") );
+        player_punch_full.push( loadImage("http://whiffpunish.com/rollback/processing/assets/player-punch-full/player-punch-full-" + (i+1) + ".png") );
+        player_punch_partial.push( loadImage("http://whiffpunish.com/rollback/processing/assets/player-punch-partial/player-punch-partial-" + (i+1) + ".png") );
+    }
 }
 
 function setup()
