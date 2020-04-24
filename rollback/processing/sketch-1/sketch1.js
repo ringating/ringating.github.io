@@ -43,23 +43,7 @@ const ps = // ps stands for player states, this object is used as an enum
 };
 
 class PlayerGameState
-{
-    // constructor(posX, posY, velX, velY, pstate, stateFrameCount, hitSomething, prevAttackInput)
-	// {
-		// this.posX = posX;
-		// this.posY = posY;
-        
-        // this.velX = velX;
-		// this.velY = velY;
-        
-        // this.state = pstate;
-        // this.stateFrameCount = stateFrameCount;
-        
-        // this.hitSomething = hitSomething;
-        
-        // this.prevAttackInput = prevAttackInput; // attacks only come out on press, so this is necessary to check
-	// }
-    
+{    
     constructor()
     {
         this.posX = 0;
@@ -73,18 +57,12 @@ class PlayerGameState
         
         this.hitSomething = false;
         
-        this.prevAttackInput = false; // attacks only come out on press, so this is necessary to check
+        this.prevAttackInput = false; // attacks only come out on press, so this is a necessary piece of state
     }
 }
 
 class GameState
 {
-	// constructor(p1_pgs, p2_pgs)
-	// {
-		// this.p1 = p1_pgs;
-		// this.p2 = p2_pgs;
-	// }
-    
     constructor()
 	{
 		this.p1 = new PlayerGameState();
@@ -157,6 +135,9 @@ function draw()
     check_update_wobbly_frames();
     image_wobbly("game_window", 0, 0);
     image_wobbly("player_knockdown", 0, 0);
+    image_wobbly("player_launch_rising", 400, 140);
+    image_wobbly("player_launch_falling", 280, 120);
+    image_wobbly("player_launch_apex", 300, 0);
 }
 
 function image_wobbly(spriteStr, xCoord, yCoord)
