@@ -1,18 +1,24 @@
 // sprite arrays
-var game_window = [];
-var player_hitstun = [];
-var player_idle = [];
-var player_knockdown = [];
-var player_launch_apex = [];
-var player_launch_falling = [];
-var player_launch_rising = [];
-var player_punch_anticipation = [];
-var player_punch_full = [];
-var player_punch_partial = [];
-var player_wakeup = [];
-var player_walk1 = [];
-var player_walk2 = [];
-var player_walk3 = [];
+var wobbly_sprites = 
+{
+    game_window                 : {"frame":0, "arr":[]},
+    player_hitstun              : {"frame":0, "arr":[]},
+    player_idle                 : {"frame":0, "arr":[]},
+    player_jump_rising          : {"frame":0, "arr":[]},
+    player_jump_falling         : {"frame":0, "arr":[]},
+    player_knockdown            : {"frame":0, "arr":[]},
+    player_launch_apex          : {"frame":0, "arr":[]},
+    player_launch_falling       : {"frame":0, "arr":[]},
+    player_launch_rising        : {"frame":0, "arr":[]},
+    player_punch_anticipation   : {"frame":0, "arr":[]},
+    player_punch_full           : {"frame":0, "arr":[]},
+    player_punch_partial        : {"frame":0, "arr":[]},
+    player_wakeup               : {"frame":0, "arr":[]},
+    player_walk1                : {"frame":0, "arr":[]},
+    player_walk2                : {"frame":0, "arr":[]},
+    player_walk3                : {"frame":0, "arr":[]}
+}
+
 
 // game constants
 gameWidth = 631;
@@ -113,36 +119,71 @@ function generateNextGameState(currentGameState, currentP1Input, currentP2Input)
 
 function preload()
 {
-    game_window.push( loadImage("http://whiffpunish.com/rollback/processing/assets/game-window/game-window-1.png") );
-    game_window.push( loadImage("http://whiffpunish.com/rollback/processing/assets/game-window/game-window-2.png") );
-    game_window.push( loadImage("http://whiffpunish.com/rollback/processing/assets/game-window/game-window-3.png") );
-    game_window.push( loadImage("http://whiffpunish.com/rollback/processing/assets/game-window/game-window-4.png") );
+    wobbly_sprites.game_window.arr.push( loadImage("http://whiffpunish.com/rollback/processing/assets/game-window/game-window-1.png") );
+    wobbly_sprites.game_window.arr.push( loadImage("http://whiffpunish.com/rollback/processing/assets/game-window/game-window-2.png") );
+    wobbly_sprites.game_window.arr.push( loadImage("http://whiffpunish.com/rollback/processing/assets/game-window/game-window-3.png") );
+    wobbly_sprites.game_window.arr.push( loadImage("http://whiffpunish.com/rollback/processing/assets/game-window/game-window-4.png") );
     
     for(let i = 0; i < 5; ++i)
     {
-        player_hitstun.push( loadImage("http://whiffpunish.com/rollback/processing/assets/player-hitstun/player-hitstun-" + (i+1) + ".png") );
-        player_idle.push( loadImage("http://whiffpunish.com/rollback/processing/assets/player-idle/player-idle-" + (i+1) + ".png") );
-        player_knockdown.push( loadImage("http://whiffpunish.com/rollback/processing/assets/player-knockdown/player-knockdown-" + (i+1) + ".png") );
-        player_launch_apex.push( loadImage("http://whiffpunish.com/rollback/processing/assets/player-launch-apex/player-launch-apex-" + (i+1) + ".png") );
-        player_launch_falling.push( loadImage("http://whiffpunish.com/rollback/processing/assets/player-launch-falling/player-launch-falling-" + (i+1) + ".png") );
-        player_launch_rising.push( loadImage("http://whiffpunish.com/rollback/processing/assets/player-launch-rising/player-launch-rising-" + (i+1) + ".png") );
-        player_punch_anticipation.push( loadImage("http://whiffpunish.com/rollback/processing/assets/player-punch-anticipation/player-punch-anticipation-" + (i+1) + ".png") );
-        player_punch_full.push( loadImage("http://whiffpunish.com/rollback/processing/assets/player-punch-full/player-punch-full-" + (i+1) + ".png") );
-        player_punch_partial.push( loadImage("http://whiffpunish.com/rollback/processing/assets/player-punch-partial/player-punch-partial-" + (i+1) + ".png") );
+        wobbly_sprites.player_hitstun.arr.push(             loadImage("http://whiffpunish.com/rollback/processing/assets/player-hitstun/player-hitstun-"                        + (i+1) + ".png") );
+        wobbly_sprites.player_idle.arr.push(                loadImage("http://whiffpunish.com/rollback/processing/assets/player-idle/player-idle-"                              + (i+1) + ".png") );
+        wobbly_sprites.player_jump_falling.arr.push(        loadImage("http://whiffpunish.com/rollback/processing/assets/player-launch-falling/player-launch-falling-"          + (i+1) + ".png") ); // change this
+        wobbly_sprites.player_jump_rising.arr.push(         loadImage("http://whiffpunish.com/rollback/processing/assets/player-launch-rising/player-launch-rising-"            + (i+1) + ".png") ); // change this
+        wobbly_sprites.player_knockdown.arr.push(           loadImage("http://whiffpunish.com/rollback/processing/assets/player-knockdown/player-knockdown-"                    + (i+1) + ".png") );
+        wobbly_sprites.player_launch_apex.arr.push(         loadImage("http://whiffpunish.com/rollback/processing/assets/player-launch-apex/player-launch-apex-"                + (i+1) + ".png") );
+        wobbly_sprites.player_launch_falling.arr.push(      loadImage("http://whiffpunish.com/rollback/processing/assets/player-launch-falling/player-launch-falling-"          + (i+1) + ".png") );
+        wobbly_sprites.player_launch_rising.arr.push(       loadImage("http://whiffpunish.com/rollback/processing/assets/player-launch-rising/player-launch-rising-"            + (i+1) + ".png") );
+        wobbly_sprites.player_punch_anticipation.arr.push(  loadImage("http://whiffpunish.com/rollback/processing/assets/player-punch-anticipation/player-punch-anticipation-"  + (i+1) + ".png") );
+        wobbly_sprites.player_punch_full.arr.push(          loadImage("http://whiffpunish.com/rollback/processing/assets/player-punch-full/player-punch-full-"                  + (i+1) + ".png") );
+        wobbly_sprites.player_punch_partial.arr.push(       loadImage("http://whiffpunish.com/rollback/processing/assets/player-punch-partial/player-punch-partial-"            + (i+1) + ".png") );
+        wobbly_sprites.player_wakeup.arr.push(              loadImage("http://whiffpunish.com/rollback/processing/assets/player-wakeup/player-wakeup-"                          + (i+1) + ".png") );
+        wobbly_sprites.player_walk1.arr.push(               loadImage("http://whiffpunish.com/rollback/processing/assets/player-walk1/player-walk1-"                            + (i+1) + ".png") );
+        wobbly_sprites.player_walk2.arr.push(               loadImage("http://whiffpunish.com/rollback/processing/assets/player-walk2/player-walk2-"                            + (i+1) + ".png") );
+        wobbly_sprites.player_walk3.arr.push(               loadImage("http://whiffpunish.com/rollback/processing/assets/player-walk3/player-walk3-"                            + (i+1) + ".png") );
     }
 }
 
 function setup()
 {
 	frameRate(60);
-	createCanvas(1600, 900);
+	createCanvas(800, 450);
 	background(0);
     textAlign(LEFT, BOTTOM);
 }
 
 function draw() 
 {
-    image(game_window[0], 0, 0);
+    check_update_wobbly_frames();
+    image_wobbly("game_window", 0, 0);
+    image_wobbly("player_knockdown", 0, 0);
+}
+
+function image_wobbly(spriteStr, xCoord, yCoord)
+{
+    let temp = wobbly_sprites[spriteStr];
+    image(temp.arr[temp.frame], xCoord, yCoord);
+}
+
+function check_update_wobbly_frames()
+{
+    if(frameCount % 12 === 0)
+    {
+        for(const spriteName in wobbly_sprites)
+        {
+            let prevFrame = wobbly_sprites[spriteName].frame;
+            wobbly_sprites[spriteName].frame = getRandomInt(wobbly_sprites[spriteName].arr.length);
+            if(prevFrame === wobbly_sprites[spriteName].frame)
+            {
+                wobbly_sprites[spriteName].frame = (++prevFrame) % wobbly_sprites[spriteName].arr.length;
+            }
+        }
+    }
+}
+
+function getRandomInt(max)
+{
+  return Math.floor(Math.random() * Math.floor(max));
 }
 
 // function keyPressed()
