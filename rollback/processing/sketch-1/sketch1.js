@@ -1,4 +1,18 @@
-//var img_bg;
+// sprite arrays
+var game_window = [];
+var player_hitstun = [];
+var player_idle = [];
+var player_knockdown = [];
+var player_launch_apex = [];
+var player_launch_falling = [];
+var player_launch_rising = [];
+var player_punch_anticipation = [];
+var player_punch_full = [];
+var player_punch_partial = [];
+var player_wakeup = [];
+var player_walk1 = [];
+var player_walk2 = [];
+var player_walk3 = [];
 
 // game constants
 gameWidth = 631;
@@ -99,110 +113,40 @@ function generateNextGameState(currentGameState, currentP1Input, currentP2Input)
 
 function preload()
 {
-    //img_bg = loadImage("bg.png");
+    game_window[0] = loadImage("http://whiffpunish.com/rollback/processing/assets/game-window/game-window-1.png");
+    game_window.push( loadImage("http://whiffpunish.com/rollback/processing/assets/game-window/game-window-2.png") );
+    game_window.push( loadImage("http://whiffpunish.com/rollback/processing/assets/game-window/game-window-3.png") );
+    game_window.push( loadImage("http://whiffpunish.com/rollback/processing/assets/game-window/game-window-4.png") );
 }
 
 function setup()
 {
 	frameRate(60);
-	createCanvas(winWidth, winHeight);
-	background(255);
+	createCanvas(1600, 900);
+	background(0);
     textAlign(LEFT, BOTTOM);
 }
 
 function draw() 
 {
-    image(img_bg, 0, 0);
-    
-    if(paused)
-    {
-        tickFrameCount = 1;
-    }
-    else
-    {
-        tickFrameCount++;
-    
-        if(tickFrameCount >= tickDuration)
-        {
-            tickFrameCount = 0;
-            currState = (currState+1)%3;
-            //console.log("currState = " + currState);
-        }
-    }
-    
-    switch (currState) 
-    {
-        case 0: // update
-            if(tickFrameCount == 0)
-            {
-                // do once per cycle
-                curr_input = next_input;
-                curr_prevState = curr_nextState;
-                curr_nextState = Math.min(Math.max(curr_prevState + curr_input, 1), 9);
-                
-                switch(curr_input)
-                {
-                    case -1:
-                        inputText = "◄";
-                        break;
-                    case 0:
-                        inputText = "■";
-                        break;
-                    case 1:
-                        inputText = "►";
-                        break;
-                }
-            }
-            image(img_update_glow,0,0);
-            break;
-            
-        case 1: // render
-            render_state = curr_nextState;
-            image(img_render_glow,0,0);
-            break;
-            
-        case 2: // input
-            image(img_input_glow,0,0);
-            if(keyIsDown(37) && !keyIsDown(39))
-            {
-                image(img_input_left,0,0);
-                next_input = -1;
-            }
-            if(keyIsDown(39) && !keyIsDown(37))
-            {
-                image(img_input_right,0,0);
-                next_input = 1;
-            }
-            if( !(keyIsDown(37)||keyIsDown(39)) || (keyIsDown(37)&&keyIsDown(39)))
-            {
-                image(img_input_neutral,0,0);
-                next_input = 0;
-            }
-            break;
-    }
-    
-    image(img_render_guy, guy_x_at_1 + 19*(render_state-1), guy_y);
-    
-    text(""+curr_prevState, 46, 272);
-    text(inputText, 91, 269);
-    text(""+curr_nextState, 136, 272);
+    image(game_window[0], 0, 0);
 }
 
-function keyPressed()
-{
-    switch(keyCode)
-    {
-        case 38: // up arrow
-            break;
-        case 40: // down arrow
-            break;
-        case 39: // right arrow
-            break;
-        case 37: // left arrow
-            break;
-        case 13: // enter
-            paused  = !paused;
-            //console.log("toggling pause");
-            break;
-    }
-}
+// function keyPressed()
+// {
+    // switch(keyCode)
+    // {
+        // case 38: // up arrow
+            // break;
+        // case 40: // down arrow
+            // break;
+        // case 39: // right arrow
+            // break;
+        // case 37: // left arrow
+            // break;
+        // case 13: // enter
+            // paused  = !paused;
+            // //console.log("toggling pause");
+            // break;
+    // }
+// }
