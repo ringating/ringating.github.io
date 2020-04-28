@@ -111,7 +111,7 @@ function generateNextGameState(currentGameState, currentP1Input, currentP2Input)
     nextGameState.p1.posX = currentGameState.p1.posX + nextGameState.p1.velX;
     nextGameState.p1.posY = currentGameState.p1.posY + nextGameState.p1.velY;
     
-    if(nextGameState.p1.posY > 0) nextGameState.p1.state = ps.launched; else nextGameState.p1.state = ps.neutral;
+    if(nextGameState.p1.posY > 0) nextGameState.p1.state = ps.jumping; else nextGameState.p1.state = ps.neutral;
     
 	return nextGameState;
 }
@@ -206,7 +206,27 @@ function draw_gamestate(gamestate)
         switch(gamestate.p1.state)
         {
             case ps.neutral:
-                image_wobbly("player_idle", gamestate.p1.posX, pyc(gamestate.p1.posY)); // incomplete, must also include walking
+                if(gamestate.p1.velX > 0)
+                {
+                    if(frameCount % 46 > 26)
+                        image_wobbly("player_walk3", gamestate.p1.posX, pyc(gamestate.p1.posY));
+                    else if(frameCount % 46 > 13)
+                        image_wobbly("player_walk2", gamestate.p1.posX, pyc(gamestate.p1.posY));
+                    else
+                        image_wobbly("player_walk1", gamestate.p1.posX, pyc(gamestate.p1.posY));
+                }
+                else if(gamestate.p1.velX < 0)
+                {
+                    if(frameCount % 46 > 26)
+                        image_wobbly("player_walk1", gamestate.p1.posX, pyc(gamestate.p1.posY));
+                    else if(frameCount % 46 > 13)
+                        image_wobbly("player_walk2", gamestate.p1.posX, pyc(gamestate.p1.posY));
+                    else
+                        image_wobbly("player_walk3", gamestate.p1.posX, pyc(gamestate.p1.posY));
+                }
+                else
+                    image_wobbly("player_idle", gamestate.p1.posX, pyc(gamestate.p1.posY));
+                
                 break;
                 
             case ps.jumping:
