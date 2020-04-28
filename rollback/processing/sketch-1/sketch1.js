@@ -27,6 +27,7 @@ playerWidth = 87;
 playerHeight = 186;
 playerAttackDistanceX = 120; // if the other player is over this far away (relative), attack whiffs
 playerAttackDistanceY = 150; // if the other player is over this far off the ground (absolute), attack whiffs
+walkSpeed = 3.5;
 jumpSpeed = 20;
 launchSpeed = 40;
 gravity = 1;
@@ -72,12 +73,12 @@ class GameState
 
 class PlayerInputs
 {
-	constructor(left, right, jump, attack)
+	constructor()
 	{
-		this.left = left;
-		this.right = right;
-		this.jump = jump;
-        this.attack = attack;
+		this.left = false;
+		this.right = false;
+		this.jump = false;
+        this.attack = false;
 	}
 }
 
@@ -85,8 +86,14 @@ function generateNextGameState(currentGameState, currentP1Input, currentP2Input)
 {
 	var nextGameState = new GameState();
 	
-    // TODO    
-    nextGameState.p1.posX = currentGameState.p1.posX + 1;
+    // TODO
+    
+    let dx1 = 0;
+    if(currentP1Input.left)
+        dx1 -= walkSpeed;
+    if(currentP1Input.right)
+        dx1 += walkSpeed;
+    nextGameState.p1.posX = currentGameState.p1.posX + dx1;
     
 	return nextGameState;
 }
@@ -138,7 +145,13 @@ function draw()
 {
     check_update_wobbly_frames();
 
-    currState = generateNextGameState(currState, new PlayerInputs(), new PlayerInputs());
+    inputsP1 = new PlayerInputs();
+    inputsP2 = new PlayerInputs();
+    
+    getInputs(inputsP1, 65, 68, 87, 32); // A D W Space
+    getInputs(inputsP2, 37, 39, 38, 96); // Left Right Up Num0
+    
+    currState = generateNextGameState(currState, inputsP1, inputsP2);
     
     draw_gamestate(currState);
 }
@@ -214,6 +227,14 @@ function pyc(rawY) // player y coordinate
 function getRandomInt(max)
 {
   return Math.floor(Math.random() * Math.floor(max));
+}
+
+function getInputs(inputObj, leftKey, rightKey, jumpKey, attackKey)
+{
+    inputObj.left = keyIsDown(leftKey);
+    inputObj.right = keyIsDown(rightKey);
+    inputObj.jump = keyIsDown(jumpKey);
+    inputObj.attack = keyIsDown(attackKey);
 }
 
 // function keyPressed()
