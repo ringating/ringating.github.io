@@ -90,8 +90,12 @@ function generateNextGameState(currentGameState, currentP1Input, currentP2Input)
     {
         // grounded
         
+        nextGameState.p1.state = ps.neutral;
+        
         if(currentP1Input.jump)
         {
+            nextGameState.p1.state = ps.jumping;
+            
             nextGameState.p1.velY = jumpSpeed;
         }
         
@@ -104,6 +108,8 @@ function generateNextGameState(currentGameState, currentP1Input, currentP2Input)
     {
         // airborne
         
+        nextGameState.p1.state = ps.jumping;
+        
         nextGameState.p1.velX = currentGameState.p1.velX;
         nextGameState.p1.velY = currentGameState.p1.velY - gravity;
     }
@@ -111,7 +117,12 @@ function generateNextGameState(currentGameState, currentP1Input, currentP2Input)
     nextGameState.p1.posX = currentGameState.p1.posX + nextGameState.p1.velX;
     nextGameState.p1.posY = currentGameState.p1.posY + nextGameState.p1.velY;
     
-    if(nextGameState.p1.posY > 0) nextGameState.p1.state = ps.jumping; else nextGameState.p1.state = ps.neutral;
+    //TODO
+    
+    if(nextGameState.p1.state == currentGameState.p1.state)
+        nextGameState.p1.stateFrameCount = currentGameState.p1.stateFrameCount + 1;
+    else
+        nextGameState.p1.stateFrameCount = 1;
     
 	return nextGameState;
 }
