@@ -86,6 +86,7 @@ function generateNextGameState(currentGameState, currentP1Input, currentP2Input)
 	var nextGameState = new GameState();
 	
     // TODO    
+    nextGameState.p1.posX = currentGameState.p1.posX + 1;
     
 	return nextGameState;
 }
@@ -129,20 +130,17 @@ function setup()
     textAlign(LEFT, BOTTOM);
 }
 
-var testState = new GameState();
-testState.p1.posX = 400;
+var currState = new GameState();
+var prevState = new GameState();
 
 
 function draw() 
 {
     check_update_wobbly_frames();
-    // image_wobbly("game_window", 0, 0);
-    // image_wobbly("player_knockdown", 0, 0);
-    // image_wobbly("player_launch_rising", 400, 140);
-    // image_wobbly("player_launch_falling", 280, 120);
-    // image_wobbly("player_launch_apex", 300, 0);
+
+    currState = generateNextGameState(currState, new PlayerInputs(), new PlayerInputs());
     
-    draw_gamestate(testState);
+    draw_gamestate(currState);
 }
 
 function image_wobbly(spriteStr, xCoord, yCoord)
