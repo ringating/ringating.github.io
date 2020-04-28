@@ -86,14 +86,32 @@ function generateNextGameState(currentGameState, currentP1Input, currentP2Input)
 {
 	var nextGameState = new GameState();
 	
-    // TODO
+    if(currentGameState.p1.posY <= 0)
+    {
+        // grounded
+        
+        if(currentP1Input.jump)
+        {
+            nextGameState.p1.velY = jumpSpeed;
+        }
+        
+        if(currentP1Input.left)
+            nextGameState.p1.velX -= walkSpeed;
+        if(currentP1Input.right)
+            nextGameState.p1.velX += walkSpeed;
+    }
+    else
+    {
+        // airborne
+        
+        nextGameState.p1.velX = currentGameState.p1.velX;
+        nextGameState.p1.velY = currentGameState.p1.velY - gravity;
+    }
     
-    let dx1 = 0;
-    if(currentP1Input.left)
-        dx1 -= walkSpeed;
-    if(currentP1Input.right)
-        dx1 += walkSpeed;
-    nextGameState.p1.posX = currentGameState.p1.posX + dx1;
+    nextGameState.p1.posX = currentGameState.p1.posX + nextGameState.p1.velX;
+    nextGameState.p1.posY = currentGameState.p1.posY + nextGameState.p1.velY;
+    
+    if(nextGameState.p1.posY > 0) nextGameState.p1.state = ps.launched; else nextGameState.p1.state = ps.neutral;
     
 	return nextGameState;
 }
@@ -206,6 +224,12 @@ function draw_gamestate(gamestate)
                 break;
                 
             case ps.launched:
+                if(gamestate.p1.velY > 4.5)
+                    image_wobbly("player_launch_rising", gamestate.p1.posX, pyc(gamestate.p1.posY));
+                else if(gamestate.p1.velY < -4.5)
+                    image_wobbly("player_launch_falling", gamestate.p1.posX, pyc(gamestate.p1.posY));
+                else
+                    image_wobbly("player_launch_apex", gamestate.p1.posX, pyc(gamestate.p1.posY));
                 break;
                 
             case ps.knockdown:
