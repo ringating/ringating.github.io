@@ -32,6 +32,13 @@ jumpSpeed = 20;
 launchSpeed = 40;
 gravity = 1;
 
+punchAnticipationFrames = 8;
+punchActiveFrames = 15;
+punchRecoveryFrames = 7;
+hitstunFrames = 12;
+knockdownMaxFrames = 90;
+wakeupFrames = 16;
+
 const ps = // ps stands for player states, this object is used as an enum
 {
     "neutral":  1,
@@ -85,10 +92,51 @@ class PlayerInputs
 function generateNextGameState(currentGameState, currentP1Input, currentP2Input)
 {
 	var nextGameState = new GameState();
+    
+    // timed player state transitions
+    switch(currentGameState.p1.state)
+    {
+        case ps.punching:
+            if(currentGameState.p1.stateFrameCount > (punchAnticipationFrames + punchActiveFrames + punchRecoveryFrames))
+            {
+                nextGameState.p1.state = ps.neutral;
+            }
+            break;
+        
+        case ps.hitstun:
+            if(currentGameState.p1.stateFrameCount > hitstunFrames)
+            {
+                nextGameState.p1.state = ps.launched;
+                nextGameState.p1.velY = launchSpeed;
+            }
+            break;
+        
+        case ps.knockdown:
+            if(currentGameState.p1.stateFrameCount > knockdownMaxFrames)
+            {
+                nextGameState.p1.state = ps.wakeup;
+            }
+            break;
+        
+        case ps.wakeup:
+            if(currentGameState.p1.stateFrameCount > wakeupFrames)
+            {
+                nextGameState.p1.state = ps.neutral;
+            }
+            break;
+    }
+    
+    
 	
     if(currentGameState.p1.posY <= 0)
     {
         // grounded
+        
+        if(currentP1Input.attack && !currentGameState.p1.prevAttackInput)
+        {
+            nextGameState.p1.state = ps.punching;
+            nextGameState.p1.stateFrameCount = 1;
+        }
         
         nextGameState.p1.state = ps.neutral;
         
