@@ -31,6 +31,7 @@ walkSpeed = 3.5;
 jumpSpeed = 20;
 launchSpeed = 40;
 gravity = 1;
+playerStartingOffset = 130;
 
 punchAnticipationFrames = 8;
 punchActiveFrames = 15;
@@ -96,10 +97,42 @@ function generateNextGameState(currentGameState, currentP1Input, currentP2Input)
     updatePlayer(nextGameState.p1, currentGameState.p1, currentP1Input);
     updatePlayer(nextGameState.p2, currentGameState.p2, currentP2Input);
     
+    
+    
+    // resolve "collision"
+    
+    if(nextGameState.p1.posX < playerWidth/2)
+    {
+        nextGameState.p1.posX = playerWidth/2;
+    }
+    
+    if(nextGameState.p2.posX > gameWidth - playerWidth/2)
+    {
+        nextGameState.p2.posX = gameWidth - playerWidth/2;
+    }
+    
+    if(nextGameState.p2.posX - nextGameState.p1.posX < playerWidth)
+    {
+        let avg = (nextGameState.p1.posX + nextGameState.p2.posX) / 2;
+        nextGameState.p1.posX = avg - playerWidth/2;
+        nextGameState.p2.posX = avg + playerWidth/2;
+    }
+    
+    
+    
+    // update stateFrameCount for both players
+    
     if(nextGameState.p1.state == currentGameState.p1.state)
         nextGameState.p1.stateFrameCount = currentGameState.p1.stateFrameCount + 1;
     else
         nextGameState.p1.stateFrameCount = 1;
+    
+    if(nextGameState.p1.state == currentGameState.p1.state)
+        nextGameState.p1.stateFrameCount = currentGameState.p1.stateFrameCount + 1;
+    else
+        nextGameState.p1.stateFrameCount = 1;
+    
+    
     
 	return nextGameState;
 }
@@ -212,17 +245,22 @@ function preload()
     }
 }
 
+var currState;
+var prevState;
+
 function setup()
 {
 	frameRate(60);
 	createCanvas(800, 450);
 	background(0);
     textAlign(LEFT, BOTTOM);
+    
+    currState = new GameState();
+    prevState = new GameState();
+    
+    currState.p1.posX = playerStartingOffset;
+    currState.p2.posX = gameWidth - playerStartingOffset;
 }
-
-var currState = new GameState();
-var prevState = new GameState();
-
 
 function draw() 
 {
@@ -356,22 +394,3 @@ function getInputs(inputObj, leftKey, rightKey, jumpKey, attackKey)
     inputObj.jump = keyIsDown(jumpKey);
     inputObj.attack = keyIsDown(attackKey);
 }
-
-// function keyPressed()
-// {
-    // switch(keyCode)
-    // {
-        // case 38: // up arrow
-            // break;
-        // case 40: // down arrow
-            // break;
-        // case 39: // right arrow
-            // break;
-        // case 37: // left arrow
-            // break;
-        // case 13: // enter
-            // paused  = !paused;
-            // //console.log("toggling pause");
-            // break;
-    // }
-// }
