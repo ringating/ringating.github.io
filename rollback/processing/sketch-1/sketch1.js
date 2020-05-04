@@ -93,79 +93,8 @@ function generateNextGameState(currentGameState, currentP1Input, currentP2Input)
 {
 	var nextGameState = new GameState();
     
-    // timed player state transitions
-    switch(currentGameState.p1.state)
-    {
-        case ps.punching:
-            if(currentGameState.p1.stateFrameCount > (punchAnticipationFrames + punchActiveFrames + punchRecoveryFrames))
-            {
-                nextGameState.p1.state = ps.neutral;
-            }
-            break;
-        
-        case ps.hitstun:
-            if(currentGameState.p1.stateFrameCount > hitstunFrames)
-            {
-                nextGameState.p1.state = ps.launched;
-                nextGameState.p1.velY = launchSpeed;
-            }
-            break;
-        
-        case ps.knockdown:
-            if(currentGameState.p1.stateFrameCount > knockdownMaxFrames)
-            {
-                nextGameState.p1.state = ps.wakeup;
-            }
-            break;
-        
-        case ps.wakeup:
-            if(currentGameState.p1.stateFrameCount > wakeupFrames)
-            {
-                nextGameState.p1.state = ps.neutral;
-            }
-            break;
-    }
-    
-    
-	
-    if(currentGameState.p1.posY <= 0)
-    {
-        // grounded
-        
-        if(currentP1Input.attack && !currentGameState.p1.prevAttackInput)
-        {
-            nextGameState.p1.state = ps.punching;
-            nextGameState.p1.stateFrameCount = 1;
-        }
-        
-        nextGameState.p1.state = ps.neutral;
-        
-        if(currentP1Input.jump)
-        {
-            nextGameState.p1.state = ps.jumping;
-            
-            nextGameState.p1.velY = jumpSpeed;
-        }
-        
-        if(currentP1Input.left)
-            nextGameState.p1.velX -= walkSpeed;
-        if(currentP1Input.right)
-            nextGameState.p1.velX += walkSpeed;
-    }
-    else
-    {
-        // airborne
-        
-        nextGameState.p1.state = ps.jumping;
-        
-        nextGameState.p1.velX = currentGameState.p1.velX;
-        nextGameState.p1.velY = currentGameState.p1.velY - gravity;
-    }
-    
-    nextGameState.p1.posX = currentGameState.p1.posX + nextGameState.p1.velX;
-    nextGameState.p1.posY = currentGameState.p1.posY + nextGameState.p1.velY;
-    
-    //TODO
+    updatePlayer(nextGameState.p1, currentGameState.p1, currentP1Input);
+    updatePlayer(nextGameState.p2, currentGameState.p2, currentP2Input);
     
     if(nextGameState.p1.state == currentGameState.p1.state)
         nextGameState.p1.stateFrameCount = currentGameState.p1.stateFrameCount + 1;
@@ -173,6 +102,83 @@ function generateNextGameState(currentGameState, currentP1Input, currentP2Input)
         nextGameState.p1.stateFrameCount = 1;
     
 	return nextGameState;
+}
+
+function updatePlayer(nextPlayer, currPlayer, input)
+{
+    nextPlayer.state = currPlayer.state;
+    
+    // timed player state transitions
+    switch(currPlayer.state)
+    {
+        case ps.punching:
+            if(currPlayer.stateFrameCount > (punchAnticipationFrames + punchActiveFrames + punchRecoveryFrames))
+            {
+                nextPlayer.state = ps.neutral;
+            }
+            break;
+        
+        case ps.hitstun:
+            if(currPlayer.stateFrameCount > hitstunFrames)
+            {
+                nextPlayer.state = ps.launched;
+                nextPlayer.velY = launchSpeed;
+            }
+            break;
+        
+        case ps.knockdown:
+            if(currPlayer.stateFrameCount > knockdownMaxFrames)
+            {
+                nextPlayer.state = ps.wakeup;
+            }
+            break;
+        
+        case ps.wakeup:
+            if(currPlayer.stateFrameCount > wakeupFrames)
+            {
+                nextPlayer.state = ps.neutral;
+            }
+            break;
+    }
+    
+    
+	
+    if(currPlayer.posY <= 0)
+    {
+        // grounded
+        
+        if(input.attack && !currPlayer.prevAttackInput)
+        {
+            nextPlayer.state = ps.punching;
+            nextPlayer.stateFrameCount = 1;
+        }
+        
+        nextPlayer.state = ps.neutral;
+        
+        if(input.jump)
+        {
+            nextPlayer.state = ps.jumping;
+            
+            nextPlayer.velY = jumpSpeed;
+        }
+        
+        if(input.left)
+            nextPlayer.velX -= walkSpeed;
+        if(input.right)
+            nextPlayer.velX += walkSpeed;
+    }
+    else
+    {
+        // airborne
+        
+        nextPlayer.state = ps.jumping;
+        
+        nextPlayer.velX = currPlayer.velX;
+        nextPlayer.velY = currPlayer.velY - gravity;
+    }
+    
+    nextPlayer.posX = currPlayer.posX + nextPlayer.velX;
+    nextPlayer.posY = currPlayer.posY + nextPlayer.velY;
 }
 
 
@@ -233,10 +239,17 @@ function draw()
     draw_gamestate(currState);
 }
 
-function image_wobbly(spriteStr, xCoord, yCoord)
+function image_wobbly(spriteStr, xCoord, yCoord, flip)
 {
-    let temp = wobbly_sprites[spriteStr];
-    image(temp.arr[temp.frame], xCoord, yCoord);
+    push();
+        translate(xCoord, yCoord);
+        if(flip)
+        {
+            scale(-1, 1);
+        }
+        let temp = wobbly_sprites[spriteStr];
+        image(temp.arr[temp.frame], 0, 0, temp.arr[temp.frame].width, temp.arr[temp.frame].height);
+    pop();
 }
 
 function check_update_wobbly_frames()
@@ -259,64 +272,63 @@ function draw_gamestate(gamestate)
 {
     push();
         imageMode(CORNER);
-        image_wobbly("game_window", 0, 0);
+        image_wobbly("game_window", 0, 0, false);
+        drawPlayer(gamestate.p1, false);
+        drawPlayer(gamestate.p2, true);
+    pop();
+}
+
+function drawPlayer(player, flip)
+{
+    push();
         translate(8,10);
         imageMode(CENTER);
-        switch(gamestate.p1.state)
+        switch(player.state)
         {
             case ps.neutral:
-                if(gamestate.p1.velX > 0)
+                if(player.velX != 0)
                 {
                     if(frameCount % 46 > 26)
-                        image_wobbly("player_walk3", gamestate.p1.posX, pyc(gamestate.p1.posY));
+                        image_wobbly((myXOR(!flip, player.velX > 0) ? "player_walk1" : "player_walk3"), player.posX, pyc(player.posY), flip);
                     else if(frameCount % 46 > 13)
-                        image_wobbly("player_walk2", gamestate.p1.posX, pyc(gamestate.p1.posY));
+                        image_wobbly("player_walk2", player.posX, pyc(player.posY), flip);
                     else
-                        image_wobbly("player_walk1", gamestate.p1.posX, pyc(gamestate.p1.posY));
-                }
-                else if(gamestate.p1.velX < 0)
-                {
-                    if(frameCount % 46 > 26)
-                        image_wobbly("player_walk1", gamestate.p1.posX, pyc(gamestate.p1.posY));
-                    else if(frameCount % 46 > 13)
-                        image_wobbly("player_walk2", gamestate.p1.posX, pyc(gamestate.p1.posY));
-                    else
-                        image_wobbly("player_walk3", gamestate.p1.posX, pyc(gamestate.p1.posY));
+                        image_wobbly((myXOR(!flip, player.velX > 0) ? "player_walk3" : "player_walk1"), player.posX, pyc(player.posY), flip);
                 }
                 else
-                    image_wobbly("player_idle", gamestate.p1.posX, pyc(gamestate.p1.posY));
+                    image_wobbly("player_idle", player.posX, pyc(player.posY), flip);
                 
                 break;
                 
             case ps.jumping:
-                if(gamestate.p1.velY > 0)
-                    image_wobbly("player_jump_rising", gamestate.p1.posX, pyc(gamestate.p1.posY));
+                if(player.velY > 0)
+                    image_wobbly("player_jump_rising", player.posX, pyc(player.posY), flip);
                 else
-                    image_wobbly("player_jump_falling", gamestate.p1.posX, pyc(gamestate.p1.posY));
+                    image_wobbly("player_jump_falling", player.posX, pyc(player.posY), flip);
                 break;
                 
             case ps.punching:
                 break;
                 
             case ps.hitstun:
-                image_wobbly("player_hitstun", gamestate.p1.posX, pyc(gamestate.p1.posY));
+                image_wobbly("player_hitstun", player.posX, pyc(player.posY), flip);
                 break;
                 
             case ps.launched:
-                if(gamestate.p1.velY > 4.5)
-                    image_wobbly("player_launch_rising", gamestate.p1.posX, pyc(gamestate.p1.posY));
-                else if(gamestate.p1.velY < -4.5)
-                    image_wobbly("player_launch_falling", gamestate.p1.posX, pyc(gamestate.p1.posY));
+                if(player.velY > 4.5)
+                    image_wobbly("player_launch_rising", player.posX, pyc(player.posY), flip);
+                else if(player.velY < -4.5)
+                    image_wobbly("player_launch_falling", player.posX, pyc(player.posY), flip);
                 else
-                    image_wobbly("player_launch_apex", gamestate.p1.posX, pyc(gamestate.p1.posY));
+                    image_wobbly("player_launch_apex", player.posX, pyc(player.posY), flip);
                 break;
                 
             case ps.knockdown:
-                image_wobbly("player_knockdown", gamestate.p1.posX, pyc(gamestate.p1.posY));
+                image_wobbly("player_knockdown", player.posX, pyc(player.posY), flip);
                 break;
                 
             case ps.wakeup:
-                image_wobbly("player_wakeup", gamestate.p1.posX, pyc(gamestate.p1.posY));
+                image_wobbly("player_wakeup", player.posX, pyc(player.posY), flip);
                 break;
         }
     pop();
@@ -330,6 +342,11 @@ function pyc(rawY) // player y coordinate
 function getRandomInt(max)
 {
   return Math.floor(Math.random() * Math.floor(max));
+}
+
+function myXOR(op1, op2)
+{
+    return ((op1 || op2) && !(op1 && op2));
 }
 
 function getInputs(inputObj, leftKey, rightKey, jumpKey, attackKey)
