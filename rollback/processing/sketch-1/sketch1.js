@@ -25,15 +25,15 @@ gameWidth = 631;
 gameHeight = 355;
 playerWidth = 87;
 playerHeight = 186;
-playerAttackDistanceX = 120; // if the other player is over this far away (relative), attack whiffs
+playerAttackDistanceX = 160; // if the other player is over this far away (relative), attack whiffs
 playerAttackDistanceY = 150; // if the other player is over this far off the ground (absolute), attack whiffs
 walkSpeed = 3.5;
-jumpSpeed = 20;
-launchSpeed = 40;
+jumpSpeed = 18;
+launchSpeed = 22;
 gravity = 1;
 playerStartingOffset = 130;
 
-punchAnticipationFrames = 8;
+punchAnticipationFrames = 30;
 punchActiveFrames = 15;
 punchRecoveryFrames = 7;
 hitstunFrames = 12;
@@ -128,7 +128,25 @@ function generateNextGameState(currentGameState, currentP1Input, currentP2Input)
     {
         // players are in range to be hit, given either one is actually attacking
         
-        
+        if(nextGameState.p1.state == ps.punching && nextGameState.p2.state == ps.punching && currentGameState.p1.stateFrameCount == currentGameState.p2.stateFrameCount)
+        {
+            if(currentGameState.p1.stateFrameCount > punchAnticipationFrames)
+            {
+                // trade!
+                nextGameState.p1.state = ps.hitstun;
+                nextGameState.p2.state = ps.hitstun;
+            }
+        }
+        else if(nextGameState.p1.state == ps.punching && !nextGameState.p1.hitSomething && nextGameState.p1.state != ps.knockdown && nextGameState.p1.state != ps.wakeup)
+        {
+            // p1 hit p2
+            nextGameState.p1.hitSomething = true;
+            nextGameState.p2.state = ps.hitstun;
+        }
+        else if(true)
+        {
+            
+        }
     }
     
     
@@ -190,6 +208,7 @@ function updatePlayer(nextPlayer, currPlayer, input)
             if(currPlayer.stateFrameCount > (punchAnticipationFrames + punchActiveFrames + punchRecoveryFrames))
             {
                 nextPlayer.state = ps.neutral;
+                nextPlayer.hitSomething = false;
             }
             break;
         
@@ -198,6 +217,19 @@ function updatePlayer(nextPlayer, currPlayer, input)
             {
                 nextPlayer.state = ps.launched;
                 nextPlayer.velY = launchSpeed;
+            }
+            break;
+        
+        case ps.launched:
+            if(currPlayer.posY <= 0)
+            {
+                nextPlayer.state = ps.knockdown;
+                currPlayer.posY = 0;
+            }
+            else
+            {
+                nextPlayer.velX = currPlayer.velX;
+                nextPlayer.velY = currPlayer.velY - gravity;
             }
             break;
         
@@ -282,7 +314,7 @@ function draw()
     
     currState = generateNextGameState(currState, inputsP1, inputsP2);
     
-    //console.log("p1:" + currState.p1.state + " p2:" + currState.p2.state); // log each player's state
+    //console.log("p1:" + currState.p1.stateFrameCount + " p2:" + currState.p2.stateFrameCount);
     
     draw_gamestate(currState);
 }
