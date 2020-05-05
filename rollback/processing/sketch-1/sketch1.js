@@ -25,17 +25,17 @@ gameWidth = 631;
 gameHeight = 355;
 playerWidth = 87;
 playerHeight = 186;
-playerAttackDistanceX = 160; // if the other player is over this far away (relative), attack whiffs
-playerAttackDistanceY = 150; // if the other player is over this far off the ground (absolute), attack whiffs
+playerAttackDistanceX = 152; // if the other player is over this far away (relative), attack whiffs
+playerAttackDistanceY = 50; // if the other player is over this far off the ground (absolute), attack whiffs
 walkSpeed = 3.5;
 jumpSpeed = 18;
 launchSpeed = 22;
 gravity = 1;
 playerStartingOffset = 130;
 
-punchAnticipationFrames = 30;
-punchActiveFrames = 15;
-punchRecoveryFrames = 7;
+punchAnticipationFrames = 12;
+punchActiveFrames = 10;
+punchRecoveryFrames = 8;
 hitstunFrames = 12;
 knockdownMaxFrames = 90;
 wakeupFrames = 16;
@@ -137,15 +137,31 @@ function generateNextGameState(currentGameState, currentP1Input, currentP2Input)
                 nextGameState.p2.state = ps.hitstun;
             }
         }
-        else if(nextGameState.p1.state == ps.punching && !nextGameState.p1.hitSomething && nextGameState.p1.state != ps.knockdown && nextGameState.p1.state != ps.wakeup)
+        else if((nextGameState.p1.state == ps.punching) 
+            && (nextGameState.p1.state == currentGameState.p1.state) 
+            && (currentGameState.p1.stateFrameCount > punchAnticipationFrames) 
+            && (currentGameState.p1.stateFrameCount <= punchAnticipationFrames + punchActiveFrames) 
+            && (!nextGameState.p1.hitSomething) 
+            && (nextGameState.p2.state != ps.knockdown) 
+            && (nextGameState.p2.state != ps.wakeup)
+            && (nextGameState.p2.state != ps.hitstun))
         {
             // p1 hit p2
             nextGameState.p1.hitSomething = true;
             nextGameState.p2.state = ps.hitstun;
         }
-        else if(true)
+        else if((nextGameState.p2.state == ps.punching) 
+            && (nextGameState.p2.state == currentGameState.p2.state) 
+            && (currentGameState.p2.stateFrameCount > punchAnticipationFrames) 
+            && (currentGameState.p2.stateFrameCount <= punchAnticipationFrames + punchActiveFrames) 
+            && (!nextGameState.p2.hitSomething) 
+            && (nextGameState.p1.state != ps.knockdown) 
+            && (nextGameState.p1.state != ps.wakeup)
+            && (nextGameState.p1.state != ps.hitstun))
         {
-            
+            // p2 hit p1
+            nextGameState.p2.hitSomething = true;
+            nextGameState.p1.state = ps.hitstun;
         }
     }
     
