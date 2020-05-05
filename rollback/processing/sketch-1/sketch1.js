@@ -94,6 +94,8 @@ function generateNextGameState(currentGameState, currentP1Input, currentP2Input)
 {
 	var nextGameState = new GameState();
     
+    
+    
     updatePlayer(nextGameState.p1, currentGameState.p1, currentP1Input);
     updatePlayer(nextGameState.p2, currentGameState.p2, currentP2Input);
     
@@ -120,6 +122,17 @@ function generateNextGameState(currentGameState, currentP1Input, currentP2Input)
     
     
     
+    // attack stuff
+    
+    if(nextGameState.p2.posX - nextGameState.p1.posX < playerAttackDistanceX && Math.abs(nextGameState.p1.posY - nextGameState.p2.posY) < playerAttackDistanceY)
+    {
+        // players are in range to be hit, given either one is actually attacking
+        
+        
+    }
+    
+    
+    
     // update stateFrameCount for both players
     
     if(nextGameState.p1.state == currentGameState.p1.state)
@@ -127,10 +140,10 @@ function generateNextGameState(currentGameState, currentP1Input, currentP2Input)
     else
         nextGameState.p1.stateFrameCount = 1;
     
-    if(nextGameState.p1.state == currentGameState.p1.state)
-        nextGameState.p1.stateFrameCount = currentGameState.p1.stateFrameCount + 1;
+    if(nextGameState.p2.state == currentGameState.p2.state)
+        nextGameState.p2.stateFrameCount = currentGameState.p2.stateFrameCount + 1;
     else
-        nextGameState.p1.stateFrameCount = 1;
+        nextGameState.p2.stateFrameCount = 1;
     
     
     
@@ -141,9 +154,38 @@ function updatePlayer(nextPlayer, currPlayer, input)
 {
     nextPlayer.state = currPlayer.state;
     
-    // timed player state transitions
+    // player state transitions
     switch(currPlayer.state)
     {
+        case ps.neutral:
+            if(input.attack && !currPlayer.prevAttackInput)
+            {
+                nextPlayer.state = ps.punching;
+            }
+            else if(input.jump)
+            {
+                nextPlayer.state = ps.jumping;
+                nextPlayer.velY = jumpSpeed;
+            }
+            if(input.left)
+                nextPlayer.velX -= walkSpeed;
+            if(input.right)
+                nextPlayer.velX += walkSpeed;
+            break;
+        
+        case ps.jumping:
+            if(currPlayer.posY <= 0)
+            {
+                nextPlayer.state = ps.neutral;
+                currPlayer.posY = 0;
+            }
+            else
+            {
+                nextPlayer.velX = currPlayer.velX;
+                nextPlayer.velY = currPlayer.velY - gravity;
+            }
+            break;
+        
         case ps.punching:
             if(currPlayer.stateFrameCount > (punchAnticipationFrames + punchActiveFrames + punchRecoveryFrames))
             {
@@ -160,7 +202,7 @@ function updatePlayer(nextPlayer, currPlayer, input)
             break;
         
         case ps.knockdown:
-            if(currPlayer.stateFrameCount > knockdownMaxFrames)
+            if(currPlayer.stateFrameCount > knockdownMaxFrames || input.left || input.right || input.jump || input.attack)
             {
                 nextPlayer.state = ps.wakeup;
             }
@@ -174,41 +216,7 @@ function updatePlayer(nextPlayer, currPlayer, input)
             break;
     }
     
-    
-	
-    if(currPlayer.posY <= 0)
-    {
-        // grounded
-        
-        if(input.attack && !currPlayer.prevAttackInput)
-        {
-            nextPlayer.state = ps.punching;
-            nextPlayer.stateFrameCount = 1;
-        }
-        
-        nextPlayer.state = ps.neutral;
-        
-        if(input.jump)
-        {
-            nextPlayer.state = ps.jumping;
-            
-            nextPlayer.velY = jumpSpeed;
-        }
-        
-        if(input.left)
-            nextPlayer.velX -= walkSpeed;
-        if(input.right)
-            nextPlayer.velX += walkSpeed;
-    }
-    else
-    {
-        // airborne
-        
-        nextPlayer.state = ps.jumping;
-        
-        nextPlayer.velX = currPlayer.velX;
-        nextPlayer.velY = currPlayer.velY - gravity;
-    }
+    nextPlayer.prevAttackInput = input.attack;
     
     nextPlayer.posX = currPlayer.posX + nextPlayer.velX;
     nextPlayer.posY = currPlayer.posY + nextPlayer.velY;
@@ -273,6 +281,8 @@ function draw()
     getInputs(inputsP2, 37, 39, 38, 96); // Left Right Up Num0
     
     currState = generateNextGameState(currState, inputsP1, inputsP2);
+    
+    //console.log("p1:" + currState.p1.state + " p2:" + currState.p2.state); // log each player's state
     
     draw_gamestate(currState);
 }
@@ -346,6 +356,12 @@ function drawPlayer(player, flip)
                 break;
                 
             case ps.punching:
+                if(player.stateFrameCount <= punchAnticipationFrames)
+                    image_wobbly("player_punch_anticipation", player.posX, pyc(player.posY), flip);
+                else if(player.stateFrameCount <= punchAnticipationFrames + punchActiveFrames)
+                    image_wobbly("player_punch_full", player.posX, pyc(player.posY), flip);
+                else
+                    image_wobbly("player_punch_partial", player.posX, pyc(player.posY), flip);
                 break;
                 
             case ps.hitstun:
