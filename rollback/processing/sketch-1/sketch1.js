@@ -323,7 +323,7 @@ var prevState;
 function setup()
 {
 	frameRate(60);
-	createCanvas(800, 450);
+	createCanvas(647, 374);
 	background(0);
     textAlign(LEFT, BOTTOM);
     
@@ -348,7 +348,7 @@ function draw()
     
     //console.log("p1:" + currState.p1.stateFrameCount + " p2:" + currState.p2.stateFrameCount);
     
-    draw_gamestate(currState);
+    draw_gamestate(currState, 0, 0);
 }
 
 function image_wobbly(spriteStr, xCoord, yCoord, flip)
@@ -426,9 +426,12 @@ function check_update_wobbly_frames()
     }
 }
 
-function draw_gamestate(gamestate)
+function draw_gamestate(gamestate, posX, posY)
 {
     push();
+        
+        translate(posX, posY);
+        
         imageMode(CORNER);
         image_wobbly("game_window", 0, 0, false);
         drawPlayer(gamestate.p1, false);
