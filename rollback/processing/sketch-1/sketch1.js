@@ -67,6 +67,8 @@ class PlayerGameState
         this.hitSomething = false;
         
         this.prevAttackInput = false; // attacks only come out on press, so this is a necessary piece of state
+        
+        this.comboCounter = 0;
     }
 }
 
@@ -149,6 +151,7 @@ function generateNextGameState(currentGameState, currentP1Input, currentP2Input)
             // p1 hit p2
             nextGameState.p1.hitSomething = true;
             nextGameState.p2.state = ps.hitstun;
+            nextGameState.p2.comboCounter++;
         }
         else if((nextGameState.p2.state == ps.punching) 
             && (nextGameState.p2.state == currentGameState.p2.state) 
@@ -162,6 +165,7 @@ function generateNextGameState(currentGameState, currentP1Input, currentP2Input)
             // p2 hit p1
             nextGameState.p2.hitSomething = true;
             nextGameState.p1.state = ps.hitstun;
+            nextGameState.p1.comboCounter++;
         }
     }
     
@@ -253,6 +257,7 @@ function updatePlayer(nextPlayer, currPlayer, input)
             if(currPlayer.stateFrameCount > knockdownMaxFrames || input.left || input.right || input.jump || input.attack)
             {
                 nextPlayer.state = ps.wakeup;
+                nextPlayer.comboCounter = 0;
             }
             break;
         
