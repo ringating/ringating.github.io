@@ -19,6 +19,14 @@ var wobbly_sprites =
     player_walk3                : {"frame":0, "arr":[]}
 }
 
+var balsamiqSans;
+var textWobbleState = 0; // can be 0-8
+var textOffsetX = 0;
+var textOffsetY = 0;
+
+var comboCounterOffsetX = 155;
+var comboCounterOffsetY = 120;
+
 
 // game constants
 gameWidth = 631;
@@ -191,6 +199,7 @@ function generateNextGameState(currentGameState, currentP1Input, currentP2Input)
 function updatePlayer(nextPlayer, currPlayer, input)
 {
     nextPlayer.state = currPlayer.state;
+    nextPlayer.comboCounter = currPlayer.comboCounter;
     
     // player state transitions
     switch(currPlayer.state)
@@ -281,6 +290,8 @@ function updatePlayer(nextPlayer, currPlayer, input)
 
 function preload()
 {
+    balsamiqSans = loadFont("http://whiffpunish.com/rollback/processing/assets/BalsamiqSans-Regular.ttf");
+    
     wobbly_sprites.game_window.arr.push( loadImage("http://whiffpunish.com/rollback/processing/assets/game-window/game-window-1.png") );
     wobbly_sprites.game_window.arr.push( loadImage("http://whiffpunish.com/rollback/processing/assets/game-window/game-window-2.png") );
     wobbly_sprites.game_window.arr.push( loadImage("http://whiffpunish.com/rollback/processing/assets/game-window/game-window-3.png") );
@@ -366,6 +377,52 @@ function check_update_wobbly_frames()
                 wobbly_sprites[spriteName].frame = (++prevFrame) % wobbly_sprites[spriteName].arr.length;
             }
         }
+        
+        let prevTextWobbleState = textWobbleState;
+        textWobbleState = getRandomInt(9);
+        if(prevTextWobbleState === textWobbleState)
+        {
+            textWobbleState = (++prevTextWobbleState) % 9;
+        }
+        switch(textWobbleState)
+        {
+            case 0:
+                textOffsetX = -1;
+                textOffsetY = -1;
+                break;
+            case 1:
+                textOffsetX = 0;
+                textOffsetY = -1;
+                break;
+            case 2:
+                textOffsetX = 1;
+                textOffsetY = -1;
+                break;
+            case 3:
+                textOffsetX = -1;
+                textOffsetY = 0;
+                break;
+            case 4:
+                textOffsetX = 0;
+                textOffsetY = 0;
+                break;
+            case 5:
+                textOffsetX = 1;
+                textOffsetY = 0;
+                break;
+            case 6:
+                textOffsetX = -1;
+                textOffsetY = 1;
+                break;
+            case 7:
+                textOffsetX = 0;
+                textOffsetY = 1;
+                break;
+            case 8:
+                textOffsetX = 1;
+                textOffsetY = 1;
+                break;
+        }
     }
 }
 
@@ -376,6 +433,34 @@ function draw_gamestate(gamestate)
         image_wobbly("game_window", 0, 0, false);
         drawPlayer(gamestate.p1, false);
         drawPlayer(gamestate.p2, true);
+        
+        if(gamestate.p2.comboCounter > 1)
+        {
+            drawComboCounter(gamestate.p2, 8 + comboCounterOffsetX, 10 + comboCounterOffsetY)
+        }
+        
+        if(gamestate.p1.comboCounter > 1)
+        {
+            drawComboCounter(gamestate.p1, 8 + gameWidth - comboCounterOffsetX, 10 + comboCounterOffsetY)
+        }
+            
+    pop();
+}
+
+function drawComboCounter(player, posX, posY)
+{
+    push();
+        
+        textFont(balsamiqSans);
+        
+        textSize(24);
+        textAlign(CENTER, CENTER);
+        text("COMBO!", textOffsetX + posX, textOffsetY + posY - 10);
+        
+        textSize(48);
+        textAlign(CENTER, TOP);
+        text("" + player.comboCounter, textOffsetX + posX, textOffsetY + posY);
+        
     pop();
 }
 
