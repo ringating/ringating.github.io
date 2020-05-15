@@ -24,29 +24,29 @@ var textWobbleState = 0; // can be 0-8
 var textOffsetX = 0;
 var textOffsetY = 0;
 
+
+// game constants
+var gameWidth = 631;
+var gameHeight = 355;
+var playerWidth = 87;
+var playerHeight = 186;
+var playerAttackDistanceX = 152; // if the other player is over this far away (relative), attack whiffs
+var playerAttackDistanceY = 50; // if the other player is over this far off the ground (absolute), attack whiffs
+var walkSpeed = 3.5;
+var jumpSpeed = 18;
+var launchSpeed = 22;
+var gravity = 1;
+var playerStartingOffset = 130;
+
 var comboCounterOffsetX = 155;
 var comboCounterOffsetY = 120;
 
-
-// game constants
-gameWidth = 631;
-gameHeight = 355;
-playerWidth = 87;
-playerHeight = 186;
-playerAttackDistanceX = 152; // if the other player is over this far away (relative), attack whiffs
-playerAttackDistanceY = 50; // if the other player is over this far off the ground (absolute), attack whiffs
-walkSpeed = 3.5;
-jumpSpeed = 18;
-launchSpeed = 22;
-gravity = 1;
-playerStartingOffset = 130;
-
-punchAnticipationFrames = 12;
-punchActiveFrames = 10;
-punchRecoveryFrames = 8;
-hitstunFrames = 12;
-knockdownMaxFrames = 90;
-wakeupFrames = 16;
+var punchAnticipationFrames = 12;
+var punchActiveFrames = 10;
+var punchRecoveryFrames = 8;
+var hitstunFrames = 12;
+var knockdownMaxFrames = 90;
+var wakeupFrames = 16;
 
 const ps = // ps stands for player states, this object is used as an enum
 {
@@ -74,7 +74,7 @@ class PlayerGameState
         
         this.hitSomething = false;
         
-        this.prevAttackInput = false; // attacks only come out on press, so this is a necessary piece of state
+        this.prevAttackInput = false; // attacks only come out on press (not hold), so this necessary
         
         this.comboCounter = 0;
     }
@@ -318,7 +318,6 @@ function preload()
 }
 
 var currState;
-var prevState;
 
 function setup()
 {
@@ -328,7 +327,6 @@ function setup()
     textAlign(LEFT, BOTTOM);
     
     currState = new GameState();
-    prevState = new GameState();
     
     currState.p1.posX = playerStartingOffset;
     currState.p2.posX = gameWidth - playerStartingOffset;
