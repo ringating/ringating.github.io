@@ -292,6 +292,37 @@ function updatePlayer(nextPlayer, currPlayer, input)
     nextPlayer.posY = currPlayer.posY + nextPlayer.velY;
 }
 
+function copyGameState(fromState, toState)
+{
+    // toState.p1.posX = fromState.p1.posX;
+    // toState.p1.posY = fromState.p1.posY;
+    // toState.p1.velX = fromState.p1.velX;
+    // toState.p1.velY = fromState.p1.velY;
+    // toState.p1.state = fromState.p1.state;
+    // toState.p1.stateFrameCount = fromState.p1.stateFrameCount;
+    // toState.p1.hitSomething = fromState.p1.hitSomething;
+    // toState.p1.prevAttackInput = fromState.p1.prevAttackInput;
+    // toState.p1.comboCounter = fromState.p1.comboCounter;
+    
+    // toState.p2.posX = ;
+    // toState.p2.posY = ;
+    // toState.p2.velX = ;
+    // toState.p2.velY = ;
+    // toState.p2.state = ;
+    // toState.p2.stateFrameCount = ;
+    // toState.p2.hitSomething = ;
+    // toState.p2.prevAttackInput = ;
+    // toState.p2.comboCounter = ;
+    
+    for (const player in fromState)
+    {
+        for (const property in fromState[player])
+        {
+            toState[player][property] = fromState[player][property];
+        }
+    }
+}
+
 
 
 // ********************************************
@@ -482,6 +513,14 @@ function getInputs(p, inputObj, leftKey, rightKey, jumpKey, attackKey)
     inputObj.right = p.keyIsDown(rightKey);
     inputObj.jump = p.keyIsDown(jumpKey);
     inputObj.attack = p.keyIsDown(attackKey);
+}
+
+function getNoInput(inputObj)
+{
+    inputObj.left = false;
+    inputObj.right = false;
+    inputObj.jump = false;
+    inputObj.attack = false;
 }
 
 
