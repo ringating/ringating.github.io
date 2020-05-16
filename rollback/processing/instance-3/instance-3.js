@@ -92,6 +92,7 @@ function drawLatencyGraph(p, x, y, dataPoints, maxDataPoints)
             p.vertex(graphX, graphY + graphHeight);
             p.vertex(graphX + graphWidth, graphY + graphHeight);
         p.endShape();
+        p.line(graphX-3, graphY, graphX+3, graphY);
         p.strokeWeight(1);
         p.beginShape();
             for(let i = 0; i < dataPoints.length; ++i)
@@ -107,7 +108,7 @@ function drawLatencyGraph(p, x, y, dataPoints, maxDataPoints)
         p.noStroke();
         p.fill(0);
         p.textFont("Arial");
-        p.text(Math.round(maxLatency) + " ms", graphX + 3, graphY);
+        p.text(Math.round(maxLatency) + " ms", graphX - 5, graphY);
     p.pop();
     
     function drawFrameLine(nFrames)

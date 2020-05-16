@@ -589,6 +589,7 @@ var base_game = function(p)
         p5_instance1 = new p5(instance1);
         p5_instance2 = new p5(instance2);
         p5_instance3 = new p5(instance3);
+        p5_instance4 = new p5(instance4);
     };
     
     p.draw = function()
