@@ -18,8 +18,6 @@ var instance1 = function(p)
     
     p.draw = function()
     {
-        check_update_wobbly_frames();
-
         inputsP1 = new PlayerInputs();
         inputsP2 = new PlayerInputs();
         
@@ -27,8 +25,6 @@ var instance1 = function(p)
         getInputs(p, inputsP2, 37, 39, 38, 96); // Left Right Up Num0
         
         currState = generateNextGameState(currState, inputsP1, inputsP2);
-        
-        //console.log("p1:" + currState.p1.stateFrameCount + " p2:" + currState.p2.stateFrameCount);
         
         draw_gamestate(p, currState, 0, 0);
     };

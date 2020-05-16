@@ -311,9 +311,9 @@ function image_wobbly(p, spriteStr, xCoord, yCoord, flip)
     p.pop();
 }
 
-function check_update_wobbly_frames()
+function check_update_wobbly_frames(p)
 {
-    if(frameCount % 12 === 0)
+    if(p.frameCount % 12 === 0)
     {
         for(const spriteName in wobbly_sprites)
         {
@@ -411,7 +411,7 @@ function drawComboCounter(p, player, posX, posY)
         p.textAlign(p.CENTER, p.TOP);
         p.text("" + player.comboCounter, textOffsetX + posX, textOffsetY + posY);
         
-    pop();
+    p.pop();
 }
 
 function drawPlayer(p, player, flip)
@@ -424,12 +424,12 @@ function drawPlayer(p, player, flip)
             case ps.neutral:
                 if(player.velX != 0)
                 {
-                    if(frameCount % 46 > 26)
+                    if(p.frameCount % 46 > 26)
                         image_wobbly(p, (myXOR(!flip, player.velX > 0) ? "player_walk1" : "player_walk3"), player.posX, pyc(player.posY), flip);
-                    else if(frameCount % 46 > 13)
+                    else if(p.frameCount % 46 > 13)
                         image_wobbly(p, "player_walk2", player.posX, pyc(player.posY), flip);
                     else
-                        image_wobbly((myXOR(!flip, player.velX > 0) ? "player_walk3" : "player_walk1"), player.posX, pyc(player.posY), flip);
+                        image_wobbly(p, (myXOR(!flip, player.velX > 0) ? "player_walk3" : "player_walk1"), player.posX, pyc(player.posY), flip);
                 }
                 else
                     image_wobbly(p, "player_idle", player.posX, pyc(player.posY), flip);
@@ -544,7 +544,7 @@ var base_game = function(p)
     p.setup = function()
     {
         p.createCanvas(1,1);
-        p.framerate(60);
+        p.frameRate(60);
         
         // initialize other sketches
         p5_instance1 = new p5(instance1);
@@ -552,7 +552,7 @@ var base_game = function(p)
     
     p.draw = function()
     {
-        check_update_wobbly_frames();
+        check_update_wobbly_frames(p);
     };
 };
 
