@@ -22,7 +22,7 @@ var instance1 = function(p)
         inputsP2 = new PlayerInputs();
         
         getInputs(p, inputsP1, 65, 68, 87, 32); // A D W Space
-        getInputs(p, inputsP2, 37, 39, 38, 17); // Left Right Up RCtrl
+        getNoInput(inputsP2);
         
         currState = generateNextGameState(currState, inputsP1, inputsP2);
         
