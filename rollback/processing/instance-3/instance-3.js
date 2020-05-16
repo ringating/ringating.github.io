@@ -124,11 +124,11 @@ function drawLatencyGraph(p, x, y, dataPoints, maxDataPoints)
             p.noStroke();
             if(nFrames === 1)
             {
-                p.text("1 frame", graphX + 3, yPos + 2);
+                p.text("1 frame", graphX + 2, yPos);
             }
             else
             {
-                p.text(nFrames + " frames", graphX + 3, yPos + 2);
+                p.text(nFrames + " frames", graphX + 2, yPos);
             }
         p.pop();
     }
