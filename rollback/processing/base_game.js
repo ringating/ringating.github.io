@@ -548,6 +548,7 @@ var base_game = function(p)
         
         // initialize other sketches
         p5_instance1 = new p5(instance1);
+        p5_instance2 = new p5(instance2);
     };
     
     p.draw = function()
