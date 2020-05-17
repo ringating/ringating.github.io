@@ -553,6 +553,9 @@ function myXOR(op1, op2)
 // *** actually initialize the base_game instance (loads assets in preload(), initializes all other sketches in setup(), updates wobbly values in draw())
 // **********
 
+var icon_attack;
+var icon_direction;
+
 var base_game = function(p)
 {
     p.preload = function()

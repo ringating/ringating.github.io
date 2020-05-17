@@ -48,10 +48,88 @@ function drawInputDelay(p, inputs, x, y)
         
     p.pop();
     
+    const inDir = // enum for input directions
+    {
+        "upLeft":   1,
+        "up":       2,
+        "upRight":  3,
+        "left":     4,
+        "neutral":  5,
+        "right":    6
+    };
+    
+    let inputDirection;
+    
     function drawInput(inputObj, i)
     {
         p.push();
             p.translate(i*boxLength, 0);
+            
+            if(inputObj.jump)
+            {
+                if(myXOR(inputObj.left, inputObj.right))
+                {
+                    if(inputObj.left)
+                    {
+                        // up left
+                        inputDirection = inDir.upLeft;
+                    }
+                    else
+                    {
+                        // up right
+                        inputDirection = inDir.upRight;
+                    }
+                }
+                else
+                {
+                    // up
+                    inputDirection = inDir.up;
+                }
+            }
+            else
+            {
+                if(myXOR(inputObj.left, inputObj.right))
+                {
+                    if(inputObj.left)
+                    {
+                        // left
+                        inputDirection = inDir.left;
+                    }
+                    else
+                    {
+                        // right
+                        inputDirection = inDir.right;
+                    }
+                }
+                else
+                {
+                    // neutral
+                    inputDirection = inDir.neutral;
+                }
+            }
+            
+            if(inputObj.attack || inputDirection != inDir.neutral)
+            {
+                if(inputObj.attack && inputDirection === inDir.neutral)
+                {
+                    // just attack
+                }
+                else
+                {
+                    if(!inputObj.attack)
+                    {
+                        // just direction
+                    }
+                    else
+                    {
+                        // attack and direction
+                    }
+                }
+            }
+            else
+            {
+                // no input
+            }
             
         p.pop();
     }
