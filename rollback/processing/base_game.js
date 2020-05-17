@@ -513,6 +513,8 @@ function getInputs(p, inputObj, leftKey, rightKey, jumpKey, attackKey)
     inputObj.right = p.keyIsDown(rightKey);
     inputObj.jump = p.keyIsDown(jumpKey);
     inputObj.attack = p.keyIsDown(attackKey);
+    
+    return inputObj;
 }
 
 function getNoInput(inputObj)
@@ -521,6 +523,8 @@ function getNoInput(inputObj)
     inputObj.right = false;
     inputObj.jump = false;
     inputObj.attack = false;
+    
+    return inputObj;
 }
 
 

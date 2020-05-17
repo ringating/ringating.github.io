@@ -60,24 +60,24 @@
                     
                     <!-- <img class="image center" src="images/placeholder-1.png" alt=""/></p><br> -->
                     
-                    <div id="instance1" style="margin: auto; width: 647px; height: 444px;"><p style="padding: 0px;  margin: 0px;">use AWD and Spacebar to move<!-- player 1<br>use ←↑→ and Right Ctrl to move player 2--></p></div><br>
+                    <div id="instance1" style="margin: auto; width: 647px; height: 409px;"><p style="padding: 0px;  margin: 0px;">use AWD and Spacebar to move<!-- player 1<br>use ←↑→ and Right Ctrl to move player 2--></p></div><br>
                     <!-- <div style="margin: auto; width: 647px;"></div> -->
                     
                     <p>A game is a series of frames, or still images that visually represent the current state of the game.  A player influences these game states by providing controller input that changes some part of the game state (typically the player character).  A game also has its own underlying rules that can alter the game state without player input, such as gravity causing an airborne character to fall.</p>
                     
                     <p>An important aspect of most fighting game netcode is that it requires the fighting game to be "deterministic."  This means that providing the same exact series of inputs to the game will always produce the same outcome.  This is important because it means that the only data that needs to be sent between two players is their inputs.  As a side note, this deterministic nature of most fighting games is also what allows their replay systems to work.</p>
                     
-                    <div id="instance2" style="margin: auto; width: 647px; height: 429px;"><input id="recordButton" type="button" value="record inputs"> <input id="playbackButton" type="button" value="playback recording"></div> <br>
+                    <div id="instance2" style="margin: auto; width: 647px; height: 429px;"><input id="recordButton" type="button" value="record inputs"> <input id="playbackButton" type="button" value="playback recording"></div><br>
                     
                     <p>Just like playing back a replay, if both players of a deterministic fighting game have the same sequence of inputs then their games will look identical and stay synchronized.  This idea is known as "lockstep" and is the foundation of netcode for all modern fighting games.</p>
                     
                     <p>So, is lockstep alone a sufficient solution for fighting game netcode?  Each player's game requires both players' inputs in order to move to the next frame, so as long as those inputs arrive quickly there should be no problems.  However, what happens when the amount of time needed for the inputs to be sent and received exceeds the amount of time between frames?</p>
                     
-                    <div id="instance3" style="margin: auto; width: 947px; height: 444px;"></div>
+                    <div id="instance3" style="margin: auto; width: 947px; height: 374px;"></div><br>
                     
                     <p>Yeah, ew.  Unless the connection between the players is stellar, naive lockstep just doesn't cut it.  We need some way to move on to the next frame without having to wait for brand new input.</p>
                     
-                    <div id="instance4" style="margin: auto; width: 947px; height: 444px;"></div>
+                    <div id="instance4" style="margin: auto; width: 947px; height: 520px;"></div><br>
                     
                     <p>Hey, now this works.  What's changed?  In order to avoid having to wait for brand new inputs for every frame, we now collect and delay the local player's inputs for 5 frames (83 ms) in order to give the remote player's input time to arrive.  The result is that any network latency under 83 ms will no longer affect how the game feels.  This is a huge improvement over naive lockstep, since now all we have to do to make the game playable on any given connection is increase the delay until it works... right?</p>
                     
