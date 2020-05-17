@@ -86,12 +86,24 @@ function drawInputDelay(p, inputs, x, y)
             // draw the first box/input
             p.square(0, 0, boxLength);
             drawInput(inputs[0], 0);
+            p.push();
+                p.noStroke();
+                p.fill(0);
+                p.textAlign(p.CENTER, p.TOP);
+                p.text("delayed input", boxLength/2, boxLength + 6);
+            p.pop();
         }
         if(inputs.length > 1)
         {
             // draw the last box/input
             p.square(boxLength*(inputs.length-1), 0, boxLength);
             drawInput(inputs[inputs.length-1], inputs.length-1);
+            p.push();
+                p.noStroke();
+                p.fill(0);
+                p.textAlign(p.CENTER, p.TOP);
+                p.text("current input", boxLength*(inputs.length-1) + boxLength/2, boxLength + 6);
+            p.pop();
         }
         
     p.pop();

@@ -6,7 +6,7 @@
 -->
 <html>
 	<head>
-		<title>Rollback in a Nutshell</title>
+		<title>Lockstep in a Nutshell</title>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<link rel="stylesheet" href="assets/css/main.css" />
@@ -30,7 +30,7 @@
 
 		<!-- fancy top -->
 			<section id="banner">
-				<h2>Rollback in a Nutshell</h2>
+				<h2>Lockstep in a Nutshell</h2>
 				<p>An interactive exploration of fighting game netcode</p>
 				<!--
                 <ul class="actions">
@@ -79,13 +79,15 @@
                     
                     <div id="instance4" style="margin: auto; width: 947px; height: 520px;"></div><br>
                     
-                    <p>Hey, now this works.  What's changed?  In order to avoid having to wait for brand new inputs for every frame, we now collect and delay the local player's inputs for 8 frames (133 ms) in order to give the remote player's input time to arrive.  The result is that any network latency under 133 ms will no longer affect how the game feels.  This is a huge improvement over naive lockstep, since now all we have to do to make the game playable on any given connection is increase the delay until it works... right?</p>
+                    <p>Hey, now this works.  What's changed?  In order to avoid having to wait for brand new inputs for every frame, we now collect and delay the local player's inputs for 8 frames (133 ms) in order to give the remote player's input time to arrive.  The result is that any network latency under 133 ms will no longer affect how the game feels.  This is commonly known as "delay-based" netcode.</p><!--This is a huge improvement over naive lockstep, since now all we have to do to make the game playable on any given connection is increase the delay until it works... right?</p>
                     
                     <p style="text-align: center;">[...]
                     
                     <img class="image center" src="images/placeholder-5.png" alt=""/></p><br>
                     
-                    <p>[...]</p>
+                    <p>[...]</p> -->
+                    
+                    <p>I hope this article has been educational or entertaining (ideally both!), and if you're interested in learning about rollback (the endgame of lockstep netcode) you can <a href="https://twitter.com/Ringating1">follow me on twitter</a> to find out when this article gets updated.</p>
 
                 </div>
             </section>
