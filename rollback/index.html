@@ -79,7 +79,7 @@
                     
                     <div id="instance4" style="margin: auto; width: 947px; height: 520px;"></div><br>
                     
-                    <p>Hey, now this works.  What's changed?  In order to avoid having to wait for brand new inputs for every frame, we now collect and delay the local player's inputs for 5 frames (83 ms) in order to give the remote player's input time to arrive.  The result is that any network latency under 83 ms will no longer affect how the game feels.  This is a huge improvement over naive lockstep, since now all we have to do to make the game playable on any given connection is increase the delay until it works... right?</p>
+                    <p>Hey, now this works.  What's changed?  In order to avoid having to wait for brand new inputs for every frame, we now collect and delay the local player's inputs for 8 frames (133 ms) in order to give the remote player's input time to arrive.  The result is that any network latency under 133 ms will no longer affect how the game feels.  This is a huge improvement over naive lockstep, since now all we have to do to make the game playable on any given connection is increase the delay until it works... right?</p>
                     
                     <p style="text-align: center;">[...]
                     

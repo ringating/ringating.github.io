@@ -20,7 +20,7 @@ var instance3 = function(p)
     
     p.draw = function()
     {
-        latencyArr.push((Math.sin(p.frameCount / 45) + 1) * 36);
+        latencyArr.push((Math.sin(p.frameCount / 45) + 1) * 66);
         
         if(latencyArr[latencyArr.length-1] < (waitedFrames+1)*16.66666666666)
         {

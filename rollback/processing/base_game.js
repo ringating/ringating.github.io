@@ -560,6 +560,9 @@ var base_game = function(p)
 {
     p.preload = function()
     {
+        icon_attack = p.loadImage("http://whiffpunish.com/rollback/processing/assets/icon_attack.png");
+        icon_direction = p.loadImage("http://whiffpunish.com/rollback/processing/assets/icon_direction.png");
+        
         balsamiqSans = p.loadFont("http://whiffpunish.com/rollback/processing/assets/BalsamiqSans-Regular.ttf");
         
         wobbly_sprites.game_window.arr.push( p.loadImage("http://whiffpunish.com/rollback/processing/assets/game-window/game-window-1.png") );

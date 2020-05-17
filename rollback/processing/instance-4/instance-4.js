@@ -20,8 +20,7 @@ var instance4 = function(p)
     
     p.draw = function()
     {
-        latencyArr.push((Math.sin(p.frameCount / 45) + 1) * 36);
-        inputArr.push( getInputs(p, new PlayerInputs(), 65, 68, 87, 32) ); // A D W Space
+        latencyArr.push((Math.sin(p.frameCount / 45) + 1) * 66);
         
         if(inputArr.length * 16.66666666666 > latencyArr[latencyArr.length-1])
         {
@@ -33,6 +32,8 @@ var instance4 = function(p)
             // don't update gamestate, instead allow input buffer to build up
         }
         
+        inputArr.push( getInputs(p, new PlayerInputs(), 65, 68, 87, 32) ); // A D W Space
+        
         p.background(255);
         draw_gamestate(p, currState, 0, 0);
         drawLatencyGraph(p, 647, 0, latencyArr, 300);
@@ -40,28 +41,54 @@ var instance4 = function(p)
     };
 };
 
+const inDir = // enum for input directions
+{
+    "upLeft":   1,
+    "up":       2,
+    "upRight":  3,
+    "left":     4,
+    "neutral":  5,
+    "right":    6
+};
+
 function drawInputDelay(p, inputs, x, y)
 {
     let boxLength = 100;
     p.push();
         p.translate(x,y);
+        p.rectMode(p.CORNER);
+        p.noFill;
+        p.strokeWeight(4);
+        p.stroke(165);
+        for(let i = 1; i < inputs.length - 1; ++i) // draw all but first and last box/input
+        {
+            p.square(boxLength*i, 0, boxLength);
+            p.push();
+                p.tint(255, 90)
+                drawInput(inputs[i], i);
+            p.pop();
+        }
+        
+        p.stroke(0);
+        if(inputs.length > 0)
+        {
+            // draw the first box/input
+            p.square(0, 0, boxLength);
+            drawInput(inputs[0], 0);
+        }
+        if(inputs.length > 1)
+        {
+            // draw the last box/input
+            p.square(boxLength*(inputs.length-1), 0, boxLength);
+            drawInput(inputs[inputs.length-1], inputs.length-1);
+        }
         
     p.pop();
     
-    const inDir = // enum for input directions
-    {
-        "upLeft":   1,
-        "up":       2,
-        "upRight":  3,
-        "left":     4,
-        "neutral":  5,
-        "right":    6
-    };
-    
-    let inputDirection;
-    
     function drawInput(inputObj, i)
     {
+        let inputDirection;
+        
         p.push();
             p.translate(i*boxLength, 0);
             
@@ -108,29 +135,61 @@ function drawInputDelay(p, inputs, x, y)
                 }
             }
             
+            p.imageMode(p.CENTER);
             if(inputObj.attack || inputDirection != inDir.neutral)
             {
                 if(inputObj.attack && inputDirection === inDir.neutral)
                 {
                     // just attack
+                    p.image(icon_attack, boxLength/2, boxLength/2);
                 }
                 else
                 {
                     if(!inputObj.attack)
                     {
                         // just direction
+                        drawRotatedDirectionIcon(inputDirection, boxLength/2, boxLength/2);
                     }
                     else
                     {
                         // attack and direction
+                        p.image(icon_attack, boxLength*3/4, boxLength/2);
+                        drawRotatedDirectionIcon(inputDirection, boxLength/4, boxLength/2);
                     }
                 }
             }
             else
             {
                 // no input
+                p.strokeWeight(2);
+                p.square(boxLength/2 - 5, boxLength/2 - 5, 10);
             }
             
+        p.pop();
+    }
+    
+    function drawRotatedDirectionIcon(direction, x, y)
+    {
+        p.push();
+            p.translate(x,y);
+            switch(direction)
+            {
+                case inDir.right:
+                    break;
+                case inDir.upRight:
+                    p.rotate(-p.PI / 4);
+                    break;
+                case inDir.up:
+                    p.rotate(-p.PI / 2);
+                    break;
+                case inDir.upLeft:
+                    p.rotate(-3 * p.PI / 4);
+                    break;
+                case inDir.left:
+                    p.rotate(-p.PI);
+                    break;
+            }
+            p.image(icon_direction, 0, 0);
         p.pop();
     }
 }
