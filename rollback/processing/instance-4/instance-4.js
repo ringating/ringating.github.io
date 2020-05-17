@@ -1,15 +1,16 @@
 var instance4 = function(p)
 {
+    var myCanvas;
     var currState;
     var latencyArr = new Array();
     var inputArr = new Array();
     
     p.setup = function()
     {
-        let myCanvas = p.createCanvas(947, 520);
+        myCanvas = p.createCanvas(947, 520);
         myCanvas.parent("#instance4");
         p.frameRate(60);
-        p.background(0);
+        p.background(255);
         p.textAlign(p.LEFT, p.BOTTOM);
         
         currState = new GameState();
@@ -20,6 +21,16 @@ var instance4 = function(p)
     
     p.draw = function()
     {
+        if(!elementIsVisible(p.select("#instance4").elt))
+        {
+            p.frameRate(2);
+            return;
+        }
+        else
+        {
+            p.frameRate(60);
+        }
+        
         latencyArr.push((Math.sin(p.frameCount / 45) + 1) * 66);
         
         if(inputArr.length * 16.66666666666 > latencyArr[latencyArr.length-1])

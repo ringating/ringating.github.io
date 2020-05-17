@@ -527,6 +527,19 @@ function getNoInput(inputObj)
     return inputObj;
 }
 
+var win = document.defaultView;
+
+function elementIsVisible(elem) // got this from here https://stackoverflow.com/a/488073
+{
+    var docViewTop = win.scrollY;
+    var docViewBottom = docViewTop + win.innerHeight;
+    
+    var elemTop = elem.offsetTop;
+    var elemBottom = elemTop + elem.offsetHeight;
+
+    return ((elemBottom <= docViewBottom) && (elemTop >= docViewTop));
+}
+
 
 
 // *********************************

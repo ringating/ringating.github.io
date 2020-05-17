@@ -9,7 +9,7 @@ var instance3 = function(p)
         let myCanvas = p.createCanvas(947, 374);
         myCanvas.parent("#instance3");
         p.frameRate(60);
-        p.background(0);
+        p.background(255);
         p.textAlign(p.LEFT, p.BOTTOM);
         
         currState = new GameState();
@@ -20,6 +20,16 @@ var instance3 = function(p)
     
     p.draw = function()
     {
+        if(!elementIsVisible(p.select("#instance3").elt))
+        {
+            p.frameRate(2);
+            return;
+        }
+        else
+        {
+            p.frameRate(60);
+        }
+        
         latencyArr.push((Math.sin(p.frameCount / 45) + 1) * 66);
         
         if(latencyArr[latencyArr.length-1] < (waitedFrames+1)*16.66666666666)

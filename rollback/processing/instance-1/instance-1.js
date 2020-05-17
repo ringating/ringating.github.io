@@ -7,7 +7,7 @@ var instance1 = function(p)
         let myCanvas = p.createCanvas(647, 374);
         myCanvas.parent("#instance1");
         p.frameRate(60);
-        p.background(0);
+        p.background(255);
         p.textAlign(p.LEFT, p.BOTTOM);
         
         currState = new GameState();
@@ -18,6 +18,16 @@ var instance1 = function(p)
     
     p.draw = function()
     {
+        if(!elementIsVisible(p.select("#instance1").elt))
+        {
+            p.frameRate(2);
+            return;
+        }
+        else
+        {
+            p.frameRate(60);
+        }
+        
         inputsP1 = new PlayerInputs();
         inputsP2 = new PlayerInputs();
         
