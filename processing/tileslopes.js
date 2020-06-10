@@ -116,7 +116,7 @@ function drawTile(x, y)
 
 function mousePressed()
 {
-    if(mouseX >= 0 && mouseX < tileSize*gridWidth && mouseY >= 0 && mouseY < tileSize*gridHeight)
+    if(mouseButton === LEFT && mouseX >= 0 && mouseX < tileSize*gridWidth && mouseY >= 0 && mouseY < tileSize*gridHeight)
     {
         let x = Math.floor(mouseX / tileSize);
         let y = Math.floor(mouseY / tileSize);
