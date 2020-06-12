@@ -14,8 +14,11 @@ var gridHeight = 9;
 var cornerReticleOffset = 5;
 var cornerReticleLength = 10;
 
+var vertSelectRadius = 15;
+
 var tiles;
 var mouseWasPressed;
+var reticleColor;
 
 class Coord // used for returning
 {
@@ -75,6 +78,8 @@ function setup()
     }
     
     mouseWasPressed = false;
+    
+    reticleColor = color("#A17FFF");
 }
 
 
@@ -89,7 +94,7 @@ function draw()
     
     drawGridLines();
     
-    
+    drawReticleStuff();
 }
 
 
@@ -114,22 +119,40 @@ function drawGridLines()
 
 function drawTile(x, y)
 {
-    push();
-        switch(tiles[x][y].type)
-        {
-            case tileType.none:
-                break;
-                
-            case tileType.full:
-                drawTileReticle(x, y)
-                break;
-                
-            case tileType.slopeTop:
-                // draw all of this slope's tiles
-                
-                break;
-        }
-    pop();
+    switch(tiles[x][y].type)
+    {
+        case tileType.none:
+            break;
+            
+        case tileType.full:
+            push();
+                noFill();
+                stroke(0);
+                strokeWeight(2);
+                square(x*tileSize + cornerReticleOffset, y*tileSize + cornerReticleOffset, tileSize - 2*cornerReticleOffset);
+            pop();
+            break;
+            
+        case tileType.slopeTop:
+            // draw all of this slope's tiles
+            
+            break;
+    }
+}
+
+function drawReticleStuff()
+{
+    let vertCoord = pixelToVert(mouseX, mouseY);
+    let tileCoord = pixelToTile(mouseX, mouseY);
+    
+    if(distanceToNearestVert(mouseX, mouseY) <= vertSelectRadius)
+    {
+        drawVertReticle(vertCoord.x, vertCoord.y);
+    }
+    else
+    {
+        drawTileReticle(tileCoord.x, tileCoord.y);
+    }
 }
 
 function drawTileReticle(x, y)
@@ -145,7 +168,7 @@ function drawCornerReticle(x, y, rotateCount) // rotate starts upper left and ro
     rotateCount = rotateCount % 4;
     
     push();
-        stroke(100);
+        stroke(reticleColor);
         strokeWeight(2);
         translate(x*tileSize, y*tileSize);
         angleMode(DEGREES);
@@ -164,10 +187,12 @@ function drawCornerReticle(x, y, rotateCount) // rotate starts upper left and ro
 
 function drawVertReticle(x, y)
 {
-    let myCoord = pixelToVert(mouseX, mouseY);
-    fill(0);
-    stroke(0);
-    circle(myCoord.x*tileSize, myCoord.y*tileSize, 10);
+    push();
+        noFill();
+        stroke(reticleColor);
+        strokeWeight(2);
+        circle(x*tileSize, y*tileSize, vertSelectRadius * 2);
+    pop();
 }
 
 function pixelToTile(x, y)
@@ -175,6 +200,14 @@ function pixelToTile(x, y)
     return new Coord(
         Math.floor(x / tileSize), 
         Math.floor(y / tileSize)
+    );
+}
+
+function pixelToVert(x, y)
+{
+    return new Coord(
+        Math.min(Math.max(0, Math.floor( (x+tileSize/2) / tileSize)), gridWidth), 
+        Math.min(Math.max(0, Math.floor( (y+tileSize/2) / tileSize)), gridHeight) 
     );
 }
 
@@ -219,18 +252,10 @@ function deleteSlopeTile()
     
 }
 
-function pixelToVert(x, y)
-{
-    return new Coord(
-        Math.min(Math.max(0, Math.floor( (x+tileSize/2) / tileSize)), gridWidth), 
-        Math.min(Math.max(0, Math.floor( (y+tileSize/2) / tileSize)), gridHeight) 
-    );
-}
-
 function distanceToNearestVert(x, y)
 {
     let vertCoord = pixelToVert(x, y);
-    let a = x - vertCoord.x;
-    let b = y - vertCoord.y;
+    let a = x - vertCoord.x * tileSize;
+    let b = y - vertCoord.y * tileSize;
     return Math.sqrt(a*a + b*b);
 }
