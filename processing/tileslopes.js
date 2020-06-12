@@ -2,8 +2,9 @@ const tileType =
 {
     "none": 0,
     "full": 1,
-    "point": 2,
-    "interp": 3
+    "slopeTop": 2,
+    "slopeMiddle": 3,
+    "slopeBottom": 4
 };
 
 var tileSize = 70;
@@ -11,6 +12,41 @@ var gridWidth = 16;
 var gridHeight = 9;
 
 var tiles;
+
+class Coord // used for returning
+{
+    constructor(x, y)
+    {
+        this.x = x;
+        this.y = y;
+    }
+}
+
+class Tile
+{
+    constructor(type)
+    {
+        this.type = type;
+    }
+    
+    setSlopeTop(x, y) // relevant for slopeMiddle or slopeBottom
+    {
+        this.topX = x;
+        this.topY = y;
+    }
+    
+    setLeftVert() // relevant for slopeTop
+    {
+        this.leftVert = true;
+        this.rightVert = false;
+    }
+    
+    setRightVert() // relevant for slopeTop
+    {
+        this.leftVert = false;
+        this.rightVert = true;
+    }
+}
 
 
 
@@ -30,7 +66,7 @@ function setup()
         tiles[i] = new Array(gridHeight);
         for(let j = 0; j < tiles[i].length; ++j)
         {
-            tiles[i][j] = tileType.none;
+            tiles[i][j] = new Tile(tileType.none);
         }
     }
 }
@@ -78,7 +114,7 @@ function drawTile(x, y)
         let cornerOffset = 5;
         let dotDiameter = 8;
         
-        switch(tiles[x][y])
+        switch(tiles[x][y].type)
         {
             case tileType.none:
                 break;
@@ -94,32 +130,64 @@ function drawTile(x, y)
                 }
                 break;
                 
-            case tileType.point:
-                noStroke();
-                fill(0);
-                circle(tileSize/2, tileSize/2, dotDiameter);
-                break;
+            case tileType.slopeTop:
+                // draw all of this slope's tiles
                 
-            case tileType.interp:
-                translate(tileSize/2, tileSize/2);
-                textAlign(CENTER, CENTER);
-                noStroke();
-                fill(200);
-                textSize(12);
-                text("interp", 0, 0);
                 break;
         }
     pop();
 }
 
-
+function pixelToTile(x, y)
+{
+    return new Coord(
+        Math.floor(x / tileSize), 
+        Math.floor(y / tileSize)
+    );
+}
 
 function mousePressed()
 {
-    if(mouseButton === LEFT && mouseX >= 0 && mouseX < tileSize*gridWidth && mouseY >= 0 && mouseY < tileSize*gridHeight)
+    let tileCoord = pixelToTile(mouseX, mouseY)
+    let x = tileCoord.x;
+    let y = tileCoord.y;
+    
+    if(mouseButton === LEFT && x >= 0 && x < gridWidth && y >= 0 && y < gridHeight)
     {
-        let x = Math.floor(mouseX / tileSize);
-        let y = Math.floor(mouseY / tileSize);
-        tiles[x][y] = (tiles[x][y] + 1) % 4;
+        toggleTile(x, y);
     }
+}
+
+
+function toggleTile(x, y)
+{
+    switch(tiles[x][y].type)
+    {
+        case tileType.none:
+            tiles[x][y].type = tileType.full;
+            break;
+                
+        case tileType.full:
+            tiles[x][y].type = tileType.none;
+            break;
+    }
+}
+
+function ensureSlopeValidity()
+{
+    var slopeWasValid = false;
+    
+    // check if valid, fix if not
+    
+    return slopeWasValid;
+}
+
+function deleteSlopeTile()
+{
+    
+}
+
+function nearestVertCoord()
+{
+    
 }
