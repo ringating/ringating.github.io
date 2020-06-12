@@ -11,7 +11,11 @@ var tileSize = 70;
 var gridWidth = 16;
 var gridHeight = 9;
 
+var cornerReticleOffset = 5;
+var cornerReticleLength = 10;
+
 var tiles;
+var mouseWasPressed;
 
 class Coord // used for returning
 {
@@ -69,6 +73,8 @@ function setup()
             tiles[i][j] = new Tile(tileType.none);
         }
     }
+    
+    mouseWasPressed = false;
 }
 
 
@@ -82,6 +88,8 @@ function draw()
             drawTile(i,j);
     
     drawGridLines();
+    
+    
 }
 
 
@@ -107,27 +115,13 @@ function drawGridLines()
 function drawTile(x, y)
 {
     push();
-        stroke(100);
-        strokeWeight(2);
-        translate(x*tileSize, y*tileSize);
-        let cornerLength = 10;
-        let cornerOffset = 5;
-        let dotDiameter = 8;
-        
         switch(tiles[x][y].type)
         {
             case tileType.none:
                 break;
                 
             case tileType.full:
-                angleMode(DEGREES);
-                for(let i = 0; i < 4; ++i)
-                {
-                    line(cornerOffset, cornerOffset, cornerOffset, cornerOffset+cornerLength);
-                    line(cornerOffset, cornerOffset, cornerOffset+cornerLength, cornerOffset);
-                    translate(0, tileSize);
-                    rotate(-90);
-                }
+                drawTileReticle(x, y)
                 break;
                 
             case tileType.slopeTop:
@@ -136,6 +130,44 @@ function drawTile(x, y)
                 break;
         }
     pop();
+}
+
+function drawTileReticle(x, y)
+{
+    for(let i = 0; i < 4; ++i)
+    {
+        drawCornerReticle(x, y, i);
+    }
+}
+
+function drawCornerReticle(x, y, rotateCount) // rotate starts upper left and rotates counter-clockwise
+{
+    rotateCount = rotateCount % 4;
+    
+    push();
+        stroke(100);
+        strokeWeight(2);
+        translate(x*tileSize, y*tileSize);
+        angleMode(DEGREES);
+        
+        for(let i = 0; i < rotateCount; ++i)
+        {
+            translate(0, tileSize);
+            rotate(-90);
+        }
+        
+        line(cornerReticleOffset, cornerReticleOffset, cornerReticleOffset, cornerReticleOffset+cornerReticleLength);
+        line(cornerReticleOffset, cornerReticleOffset, cornerReticleOffset+cornerReticleLength, cornerReticleOffset);
+        
+    pop();
+}
+
+function drawVertReticle(x, y)
+{
+    let myCoord = pixelToVert(mouseX, mouseY);
+    fill(0);
+    stroke(0);
+    circle(myCoord.x*tileSize, myCoord.y*tileSize, 10);
 }
 
 function pixelToTile(x, y)
@@ -187,7 +219,18 @@ function deleteSlopeTile()
     
 }
 
-function nearestVertCoord()
+function pixelToVert(x, y)
 {
-    
+    return new Coord(
+        Math.min(Math.max(0, Math.floor( (x+tileSize/2) / tileSize)), gridWidth), 
+        Math.min(Math.max(0, Math.floor( (y+tileSize/2) / tileSize)), gridHeight) 
+    );
+}
+
+function distanceToNearestVert(x, y)
+{
+    let vertCoord = pixelToVert(x, y);
+    let a = x - vertCoord.x;
+    let b = y - vertCoord.y;
+    return Math.sqrt(a*a + b*b);
 }
