@@ -18,7 +18,11 @@ var vertSelectRadius = 15;
 
 var tiles;
 var mouseWasPressed;
+var draggingSlope;
 var reticleColor;
+var validColor;
+var invalidColor;
+var currColor;
 
 class Coord // used for returning
 {
@@ -28,6 +32,8 @@ class Coord // used for returning
         this.y = y;
     }
 }
+
+var dragVert = new Coord(0,0);
 
 class Tile
 {
@@ -79,10 +85,12 @@ function setup()
     
     mouseWasPressed = false;
     
+    draggingSlope = false;
+    
     reticleColor = color("#A17FFF");
+    validColor = color("#00FF00");
+    invalidColor = color("#FF0000");
 }
-
-
 
 function draw() 
 {
@@ -94,10 +102,16 @@ function draw()
     
     drawGridLines();
     
+    updateMouseStuff();
+    
     drawReticleStuff();
+    
+    mouseWasPressed = mouseIsPressed;
 }
 
 
+
+// other functions
 
 function drawGridLines()
 {
@@ -114,8 +128,6 @@ function drawGridLines()
         }
     pop();
 }
-
-
 
 function drawTile(x, y)
 {
@@ -135,9 +147,145 @@ function drawTile(x, y)
             
         case tileType.slopeTop:
             // draw all of this slope's tiles
-            
+            push();
+                noFill();
+                stroke(0);
+                strokeWeight(2);
+                circle(x*tileSize+20, y*tileSize+20, 40);
+            pop();
             break;
     }
+}
+
+function updateMouseStuff()
+{
+    if(mouseIsPressed)
+    {
+        if(!mouseWasPressed)
+        {
+            if(distanceToNearestVert(mouseX, mouseY) <= vertSelectRadius)
+            {
+                draggingSlope = true;
+                dragVert = pixelToVert(mouseX, mouseY);
+            }
+            else
+            {
+                let tileCoord = pixelToTile(mouseX, mouseY);
+                let x = tileCoord.x;
+                let y = tileCoord.y;
+                
+                if(mouseButton === LEFT && x >= 0 && x < gridWidth && y >= 0 && y < gridHeight)
+                {
+                    toggleTile(x, y);
+                }
+            }
+        }
+        else //if(mouseWasPressed)
+        {
+            if(draggingSlope)
+            {
+                let cursorVert = pixelToVert(mouseX, mouseY);
+                if(slopeIsValid(dragVert.x, dragVert.y, cursorVert.x, cursorVert.y))
+                {
+                    currColor = validColor;
+                }
+                else
+                {
+                    currColor = invalidColor;
+                }
+                push();
+                    noFill();
+                    stroke(currColor);
+                    strokeWeight(2);
+                    line(dragVert.x*tileSize, dragVert.y*tileSize, cursorVert.x*tileSize, cursorVert.y*tileSize);
+                    circle(dragVert.x*tileSize, dragVert.y*tileSize, vertSelectRadius*2);
+                    circle(cursorVert.x*tileSize, cursorVert.y*tileSize, vertSelectRadius*2);
+                pop();
+            }
+        }
+    }
+    else
+    {
+        if(mouseWasPressed)
+        {
+            if(draggingSlope)
+            {
+                // try to create the resulting slope
+                let cursorVert = pixelToVert(mouseX, mouseY);
+                if(slopeIsValid(dragVert.x, dragVert.y, cursorVert.x, cursorVert.y))
+                {
+                    let topTile = getTopOfSlope(dragVert.x, dragVert.y, cursorVert.x, cursorVert.y);
+                    tiles[topTile.x][topTile.y].type = tileType.slopeTop;
+                    if(Math.abs(dragVert.x-cursorVert.x) == 1 && Math.abs(dragVert.y-cursorVert.y) == 1)
+                    {
+                        // single tile slope
+                        let cursorIsLeft = cursorVert.x < dragVert.x;
+                        if(cursorVert.y < dragVert.y)
+                        {
+                            tiles[topTile.x][topTile.y].setLeftVert(cursorIsLeft);
+                        }
+                        else
+                        {
+                            tiles[topTile.x][topTile.y].setLeftVert(!cursorIsLeft);
+                        }
+                    }
+                }
+            }
+            draggingSlope = false;
+        }
+    }
+}
+
+function getTopOfSlope(x1, y1, x2, y2)
+{
+    let ret = new Coord(0,0);
+    if(y1 < y2)
+    {
+        if(x1 < x2)
+        {
+            // SE tile from x1,y1
+            ret.x = x1;
+            ret.y = y1;
+        }
+        else
+        {
+            // SW tile from x1,y1
+            ret.x = x1-1;
+            ret.y = y1;
+        }
+    }
+    else
+    {
+        if(x2 < x1)
+        {
+            // SE tile from x2,y2
+            ret.x = x2;
+            ret.y = y2;
+        }
+        else
+        {
+            // SW tile from x2,y2
+            ret.x = x2-1;
+            ret.y = y2;
+        }
+    }
+    return ret;
+}
+
+function getBottomOfSlope(x1, y1, x2, y2)
+{
+    
+}
+
+function slopeIsValid(x1, y1, x2, y2) // these are vert coordinates
+{
+    if((Math.abs(x1-x2) != 1) && (Math.abs(y1-y2) != 1))
+        return false;
+    
+    if((x1 === x2) || (y1 === y2))
+        return false;
+    
+    return true;
 }
 
 function drawReticleStuff()
@@ -211,19 +359,6 @@ function pixelToVert(x, y)
     );
 }
 
-function mousePressed()
-{
-    let tileCoord = pixelToTile(mouseX, mouseY)
-    let x = tileCoord.x;
-    let y = tileCoord.y;
-    
-    if(mouseButton === LEFT && x >= 0 && x < gridWidth && y >= 0 && y < gridHeight)
-    {
-        toggleTile(x, y);
-    }
-}
-
-
 function toggleTile(x, y)
 {
     switch(tiles[x][y].type)
@@ -235,21 +370,27 @@ function toggleTile(x, y)
         case tileType.full:
             tiles[x][y].type = tileType.none;
             break;
+        
+        case tileType.slopeTop:
+        case tileType.slopeMiddle:
+        case tileType.slopeBottom:
+            deleteSlopeTile(x, y);
+            break;
     }
 }
 
-function ensureSlopeValidity()
-{
-    var slopeWasValid = false;
+// function ensureSlopeValidity()
+// {
+    // var slopeWasValid = false;
     
-    // check if valid, fix if not
+    // // check if valid, fix if not
     
-    return slopeWasValid;
-}
+    // return slopeWasValid;
+// }
 
 function deleteSlopeTile()
 {
-    
+    //TODO
 }
 
 function distanceToNearestVert(x, y)
