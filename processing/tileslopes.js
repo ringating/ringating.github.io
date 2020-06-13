@@ -7,6 +7,18 @@ const tileType =
     "slopeBottom": 4
 };
 
+const cardinal = 
+{
+    "N": 0,
+    "S": 1,
+    "E": 2,
+    "W": 3,
+    "NE": 4,
+    "NW": 5,
+    "SE": 6,
+    "SW": 7
+};
+
 var tileSize = 70;
 var gridWidth = 16;
 var gridHeight = 9;
@@ -48,16 +60,16 @@ class Tile
         this.topY = y;
     }
     
-    setLeftVert() // relevant for slopeTop
+    setLeftVert(left) // relevant for slopeTop
     {
-        this.leftVert = true;
-        this.rightVert = false;
+        this.leftVert = left;
+        this.rightVert = !left;
     }
     
-    setRightVert() // relevant for slopeTop
+    setRightVert(right) // relevant for slopeTop
     {
-        this.leftVert = false;
-        this.rightVert = true;
+        this.leftVert = !right;
+        this.rightVert = right;
     }
 }
 
@@ -67,7 +79,7 @@ class Tile
 
 function setup()
 {
-    frameRate(999);
+    frameRate(60);
 	let c = createCanvas(tileSize * gridWidth, tileSize * gridHeight);
     // c.elt.style = 'max-width: 100%; max-height: 100%;';
 	background(0);
@@ -101,9 +113,7 @@ function draw()
             drawTile(i,j);
     
     drawGridLines();
-    
     updateMouseStuff();
-    
     drawReticleStuff();
     
     mouseWasPressed = mouseIsPressed;
@@ -151,10 +161,46 @@ function drawTile(x, y)
                 noFill();
                 stroke(0);
                 strokeWeight(2);
-                circle(x*tileSize+20, y*tileSize+20, 40);
+                
+                let topVertPixel = new Coord(0,y*tileSize);
+                if(tiles[x][y].leftVert)
+                {
+                    topVertPixel.x = x*tileSize;
+                }
+                else
+                {
+                    topVertPixel.x = (x+1)*tileSize;
+                }
+                circle(topVertPixel.x, topVertPixel.y+5, 10);
+                
+                let bottomVertPixel = new Coord(0,0);
+                let slopeDir;
+                if(isATopOfB(x, y, x+1, y))
+                    slopeDir = cardinal.E;
+                else if(isATopOfB(x, y, x-1, y))
+                    slopeDir = cardinal.W;
+                else if(isATopOfB(x, y, x, y-1))
+                    slopeDir = cardinal.N;
+                else if(isATopOfB(x, y, x, y+1))
+                    slopeDir = cardinal.S;
+                
             pop();
             break;
     }
+}
+
+function isATopOfB(ax, ay, bx, by)
+{
+    if(ax < 0 || ay < 0 || bx < 0 || by < 0)
+        return false;
+    
+    if(ax >= gridWidth || ay >= gridHeight || bx >= gridWidth || by >= gridHeight)
+        return false;
+    
+    if(tiles[bx][by].topX == ax && tiles[bx][by].topY == ay)
+        return true;
+    
+    return false;
 }
 
 function updateMouseStuff()
@@ -216,8 +262,8 @@ function updateMouseStuff()
                 {
                     let topTile = getTopOfSlope(dragVert.x, dragVert.y, cursorVert.x, cursorVert.y);
                     tiles[topTile.x][topTile.y].type = tileType.slopeTop;
-                    if(Math.abs(dragVert.x-cursorVert.x) == 1 && Math.abs(dragVert.y-cursorVert.y) == 1)
-                    {
+                    //if(Math.abs(dragVert.x-cursorVert.x) == 1 && Math.abs(dragVert.y-cursorVert.y) == 1)
+                    if(true){
                         // single tile slope
                         let cursorIsLeft = cursorVert.x < dragVert.x;
                         if(cursorVert.y < dragVert.y)
@@ -228,6 +274,10 @@ function updateMouseStuff()
                         {
                             tiles[topTile.x][topTile.y].setLeftVert(!cursorIsLeft);
                         }
+                    }
+                    else
+                    {
+                        // multi-tile slope
                     }
                 }
             }
@@ -273,6 +323,42 @@ function getTopOfSlope(x1, y1, x2, y2)
 }
 
 function getBottomOfSlope(x1, y1, x2, y2)
+{
+    let ret = new Coord(0,0);
+    if(y1 > y2)
+    {
+        if(x1 < x2)
+        {
+            // NE tile from x1,y1
+            ret.x = x1;
+            ret.y = y1-1;
+        }
+        else
+        {
+            // NW tile from x1,y1
+            ret.x = x1-1;
+            ret.y = y1-1;
+        }
+    }
+    else
+    {
+        if(x2 > x1)
+        {
+            // NE tile from x2,y2
+            ret.x = x2;
+            ret.y = y2-1;
+        }
+        else
+        {
+            // NW tile from x2,y2
+            ret.x = x2-1;
+            ret.y = y2-1;
+        }
+    }
+    return ret;
+}
+
+function setMiddleOfSlope(topX, topY, botX, botY)
 {
     
 }
