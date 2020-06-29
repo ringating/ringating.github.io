@@ -65,23 +65,33 @@ function setup()
 {
     SA = new ScrollingArray();
     frameRate(60);
-	let c = createCanvas(tileSize * arrSize, tileSize * arrSize);
+	let c = createCanvas(tileSize * arrSize * 2, tileSize * arrSize * 2);
     // c.elt.style = 'max-width: 100%; max-height: 100%;';
 	textAlign(CENTER, CENTER);
-    fill(255);
-    noStroke();
     textSize(12);
+    fill(255);
+    strokeWeight(1);
 }
 
 function draw() 
 {
     background(0);
+    noStroke();
 
+    // draw offset array
     var tempArr = SA.array;
-    
     for(let i = 0; i < arrSize; ++i)
         for(let j = 0; j < arrSize; ++j)
             text(""+tempArr[i][j], i*tileSize + tileSize/2, j*tileSize + tileSize/2);
+    
+    // draw actual array w/ origin lines
+    translate(arrSize*tileSize, arrSize*tileSize);
+    for(let i = 0; i < arrSize; ++i)
+        for(let j = 0; j < arrSize; ++j)
+            text(""+SA.arr[i][j], i*tileSize + tileSize/2, j*tileSize + tileSize/2);
+    stroke(color(255, 0, 0));
+    line(Math.floor(tileSize * SA.origin.x)+0.5, 0.5, Math.floor(tileSize * SA.origin.x)+0.5, arrSize*tileSize+0.5);
+    line(0.5, Math.floor(tileSize * SA.origin.y)+0.5, arrSize*tileSize+0.5, Math.floor(tileSize * SA.origin.y)+0.5);
 }
 
 function keyPressed() {
