@@ -231,7 +231,7 @@ function updateMouseStuff()
             if(draggingSlope)
             {
                 let cursorVert = pixelToVert(mouseX, mouseY);
-                if(slopeIsValid(dragVert.x, dragVert.y, cursorVert.x, cursorVert.y))
+                if(slopeVertsAreValid(dragVert.x, dragVert.y, cursorVert.x, cursorVert.y))
                 {
                     currColor = validColor;
                 }
@@ -258,27 +258,27 @@ function updateMouseStuff()
             {
                 // try to create the resulting slope
                 let cursorVert = pixelToVert(mouseX, mouseY);
-                if(slopeIsValid(dragVert.x, dragVert.y, cursorVert.x, cursorVert.y))
+                if(slopeVertsAreValid(dragVert.x, dragVert.y, cursorVert.x, cursorVert.y))
                 {
                     let topTile = getTopOfSlope(dragVert.x, dragVert.y, cursorVert.x, cursorVert.y);
                     tiles[topTile.x][topTile.y].type = tileType.slopeTop;
-                    //if(Math.abs(dragVert.x-cursorVert.x) == 1 && Math.abs(dragVert.y-cursorVert.y) == 1)
-                    if(true){
-                        // single tile slope
-                        let cursorIsLeft = cursorVert.x < dragVert.x;
-                        if(cursorVert.y < dragVert.y)
-                        {
-                            tiles[topTile.x][topTile.y].setLeftVert(cursorIsLeft);
-                        }
-                        else
-                        {
-                            tiles[topTile.x][topTile.y].setLeftVert(!cursorIsLeft);
-                        }
+                    
+                    // set top tile properties
+                    let cursorIsLeft = cursorVert.x < dragVert.x;
+                    if(cursorVert.y < dragVert.y)
+                    {
+                        tiles[topTile.x][topTile.y].setLeftVert(cursorIsLeft);
                     }
                     else
                     {
-                        // multi-tile slope
+                        tiles[topTile.x][topTile.y].setLeftVert(!cursorIsLeft);
                     }
+                    
+                    if(Math.abs(dragVert.x-cursorVert.x) > 1 || Math.abs(dragVert.y-cursorVert.y) > 1)
+                    {
+                        // create bottom and middle slope tiles
+                    }
+                    
                 }
             }
             draggingSlope = false;
@@ -286,7 +286,17 @@ function updateMouseStuff()
     }
 }
 
-function getTopOfSlope(x1, y1, x2, y2)
+function createHorizontalSlope(topX, topY, bottomX, bottomY)
+{
+    
+}
+
+function createVerticalSlope(leftX, leftY, rightX, rightY)
+{
+    
+}
+
+function getTopOfSlope(x1, y1, x2, y2) // vert coords
 {
     let ret = new Coord(0,0);
     if(y1 < y2)
@@ -322,7 +332,7 @@ function getTopOfSlope(x1, y1, x2, y2)
     return ret;
 }
 
-function getBottomOfSlope(x1, y1, x2, y2)
+function getBottomOfSlope(x1, y1, x2, y2) // vert coords
 {
     let ret = new Coord(0,0);
     if(y1 > y2)
@@ -358,12 +368,7 @@ function getBottomOfSlope(x1, y1, x2, y2)
     return ret;
 }
 
-function setMiddleOfSlope(topX, topY, botX, botY)
-{
-    
-}
-
-function slopeIsValid(x1, y1, x2, y2) // these are vert coordinates
+function slopeVertsAreValid(x1, y1, x2, y2) // vert coords
 {
     if((Math.abs(x1-x2) != 1) && (Math.abs(y1-y2) != 1))
         return false;
@@ -371,7 +376,39 @@ function slopeIsValid(x1, y1, x2, y2) // these are vert coordinates
     if((x1 === x2) || (y1 === y2))
         return false;
     
+    let topTile = getTopOfSlope(x1, y1, x2, y2);
+    let botTile = getBottomOfSlope(x1, y1, x2, y2);
+    if(slopeIsBlocked(topTile.x, topTile.y, botTile.x, botTile.y))
+        return false;
+    
     return true;
+}
+
+function slopeIsBlocked(x1, y1, x2, y2) // tile coords
+{
+    if(x2 < x1 || y2 < y1)
+    {
+        let temp = x1;
+        x1 = x2;
+        x2 = temp;
+        
+        temp = y1;
+        y1 = y2;
+        y2 = temp;
+    }
+    
+    for(let i = x1; i <= x2; ++i)
+    {
+        for(let j = y1; j <= y2; ++j)
+        {
+            if(tiles[i][j].type != tileType.none)
+            {
+                return true;
+            }
+        }
+    }
+    
+    return false;
 }
 
 function drawReticleStuff()
@@ -465,16 +502,7 @@ function toggleTile(x, y)
     }
 }
 
-// function ensureSlopeValidity()
-// {
-    // var slopeWasValid = false;
-    
-    // // check if valid, fix if not
-    
-    // return slopeWasValid;
-// }
-
-function deleteSlopeTile()
+function deleteSlopeTile(x, y)
 {
     //TODO
 }
