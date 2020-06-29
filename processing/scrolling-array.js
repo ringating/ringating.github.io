@@ -1,4 +1,4 @@
-const arrSize = 5;
+const arrSize = 9;
 const tileSize = 25;
 
 class Coord // used for returning
