@@ -1,4 +1,4 @@
-const arrSize = 9;
+const arrSize = 15;
 const tileSize = 25;
 
 class Coord // used for returning
@@ -146,16 +146,27 @@ function draw()
             {
             push();
                 if(tempArr[i][j] === 0)
+                {
                     fill(100);
+                    text("□", i*tileSize + tileSize/2, j*tileSize + tileSize/2);
+                }
+                    
                 else
+                {
                     fill(255);
-                text(""+tempArr[i][j], i*tileSize + tileSize/2, j*tileSize + tileSize/2);
+                    text("■", i*tileSize + tileSize/2, j*tileSize + tileSize/2);
+                }
             pop();
         }
     
     // draw a "player"
     let pos = Math.floor(arrSize/2)*tileSize;
-    square(pos, pos, tileSize);
+    push();
+        noFill();
+        stroke(255);
+        strokeWeight(2);
+        square(pos, pos, tileSize);
+    pop();
     
     // draw actual array w/ origin lines
     translate(arrSize*tileSize, arrSize*tileSize);
@@ -164,10 +175,16 @@ function draw()
         {
             push();
                 if(SA.arr[i][j] === 0)
+                {
                     fill(100);
+                    text("□", i*tileSize + tileSize/2, j*tileSize + tileSize/2);
+                }
+                    
                 else
+                {
                     fill(255);
-                text(""+SA.arr[i][j], i*tileSize + tileSize/2, j*tileSize + tileSize/2);
+                    text("■", i*tileSize + tileSize/2, j*tileSize + tileSize/2);
+                }
             pop();
         }
     stroke(color(255, 0, 0));
@@ -179,25 +196,25 @@ function tryMove()
 {
     let moved = false;
     
-    if(keyIsDown(RIGHT_ARROW))
+    if(keyIsDown(RIGHT_ARROW) && !keyIsDown(LEFT_ARROW))
     {
         SA.scrollHorizontal(1);
         moved = true;
     }
         
-    if(keyIsDown(LEFT_ARROW))
+    if(keyIsDown(LEFT_ARROW) && !keyIsDown(RIGHT_ARROW))
     {
        SA.scrollHorizontal(-1);
        moved = true;
     }
         
-    if(keyIsDown(UP_ARROW))
+    if(keyIsDown(UP_ARROW) &&!keyIsDown(DOWN_ARROW))
     {
         SA.scrollVertical(-1);
         moved = true;
     }
     
-    if(keyIsDown(DOWN_ARROW))
+    if(keyIsDown(DOWN_ARROW) && !keyIsDown(UP_ARROW))
     {
         SA.scrollVertical(1);
         moved = true;
