@@ -116,8 +116,26 @@ function setup()
     strokeWeight(1);
 }
 
+var keyTimer = 0;
+const keyDelay = 6;
+var moved = false;
+
 function draw() 
 {
+    // input/"speed" stuff
+    if(keyTimer <= 0)
+    {
+        moved = tryMove();
+    }
+    else
+        keyTimer--;
+    
+    if(moved)
+        keyTimer = keyDelay;
+    
+    moved = false;
+    
+    // ...
     background(0);
     noStroke();
 
@@ -125,35 +143,67 @@ function draw()
     var tempArr = SA.array;
     for(let i = 0; i < arrSize; ++i)
         for(let j = 0; j < arrSize; ++j)
-            text(""+tempArr[i][j], i*tileSize + tileSize/2, j*tileSize + tileSize/2);
+            {
+            push();
+                if(tempArr[i][j] === 0)
+                    fill(100);
+                else
+                    fill(255);
+                text(""+tempArr[i][j], i*tileSize + tileSize/2, j*tileSize + tileSize/2);
+            pop();
+        }
+    
+    // draw a "player"
+    let pos = Math.floor(arrSize/2)*tileSize;
+    square(pos, pos, tileSize);
     
     // draw actual array w/ origin lines
     translate(arrSize*tileSize, arrSize*tileSize);
     for(let j = 0; j < arrSize; ++j)
         for(let i = 0; i < arrSize; ++i)
-            text(""+SA.arr[i][j], i*tileSize + tileSize/2, j*tileSize + tileSize/2);
+        {
+            push();
+                if(SA.arr[i][j] === 0)
+                    fill(100);
+                else
+                    fill(255);
+                text(""+SA.arr[i][j], i*tileSize + tileSize/2, j*tileSize + tileSize/2);
+            pop();
+        }
     stroke(color(255, 0, 0));
     line(Math.floor(tileSize * wrap(SA.origin.x))+0.5, 0.5, Math.floor(tileSize * wrap(SA.origin.x))+0.5, arrSize*tileSize+0.5);
     line(0.5, Math.floor(tileSize * wrap(SA.origin.y))+0.5, arrSize*tileSize+0.5, Math.floor(tileSize * wrap(SA.origin.y))+0.5);
 }
 
-function keyPressed()
+function tryMove()
 {
-    switch(keyCode)
+    let moved = false;
+    
+    if(keyIsDown(RIGHT_ARROW))
     {
-        case RIGHT_ARROW:
-            SA.scrollHorizontal(-1);
-            break;
-        case LEFT_ARROW:
-            SA.scrollHorizontal(1);
-            break;
-        case UP_ARROW:
-            SA.scrollVertical(1);
-            break;
-        case DOWN_ARROW:
-            SA.scrollVertical(-1);
-            break;
+        SA.scrollHorizontal(1);
+        moved = true;
     }
+        
+    if(keyIsDown(LEFT_ARROW))
+    {
+       SA.scrollHorizontal(-1);
+       moved = true;
+    }
+        
+    if(keyIsDown(UP_ARROW))
+    {
+        SA.scrollVertical(-1);
+        moved = true;
+    }
+    
+    if(keyIsDown(DOWN_ARROW))
+    {
+        SA.scrollVertical(1);
+        moved = true;
+    }
+    
+    return moved;
 }
 
 function wrap(n)
@@ -165,12 +215,15 @@ function wrap(n)
 
 function calcTile(i, j)
 {
-    let sign = 1;
+    // let sign = 1;
+    // if((i < 0 || j < 0) && !(i < 0 && j < 0))
+        // sign = -1;
+    // return Math.min(Math.abs(i), Math.abs(j)) * sign;
     
-    if((i < 0 || j < 0) && !(i < 0 && j < 0))
-        sign = -1;
-    
-    return Math.min(Math.abs(i), Math.abs(j)) * sign;
+    if(Math.random() < 0.1)
+        return 1;
+    else
+        return 0;
 }
 
 // // from https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/random
