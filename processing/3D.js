@@ -41,7 +41,7 @@ function drawVoxelObject(voxObj)
     voxObj.voxels.forEach(vox =>
     {
         push();
-        translate(vox[0]*voxelSize, vox[1]*voxelSize, vox[2]*voxelSize);
+        translate(vox[2]*voxelSize, vox[1]*voxelSize, vox[0]*voxelSize);
         fill(color("#" + voxObj.palette[vox[3]].toString(16)));
         noStroke();
         box(voxelSize);
