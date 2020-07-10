@@ -43,7 +43,7 @@ function draw()
     stroke(color(0,0,255));
     line(0,0,0, 0,0,1000);
     
-    directionalLight(color(255), -1, -1, -1);
+    //directionalLight(color(255), -1, -1, -1);
     drawVoxelObject(sampleVoxelObject);
 }
 
