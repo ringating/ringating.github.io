@@ -1,16 +1,11 @@
 const chunk0Length = 10;
 
 var lodChunkSizes = [chunk0Length, chunk0Length*2, chunk0Length*4, chunk0Length*8]; // pixels, each size up is double the prior
-var lodDistances = [2, 2, 2, 2]; // measured in lengths of their associated LoD. must be even to prevent overlap w/ bordering smaller chunks
+//var lodChunkCounts = [2, 2, 2, 2]; // # of each lod's chunks to draw. must be even.
 
-var canvasLength = 0;
-for(let i = 0; i < lodChunkSizes.length; ++i)
-{
-    canvasLength += lodChunkSizes[i] * lodDistances[i];
-}
-canvasLength *= 2;
+var lodStarts = [0, 2, 2, 2]; // distances (in each lod's own units) of how far to traverse out before starting
 
-const canvasLengthInChunks = Math.floor( canvasLength / lodChunkSizes[0] );
+var canvasLength = 800;
 
 class Coord // used for returning
 {
@@ -20,23 +15,6 @@ class Coord // used for returning
         this.y = y;
     }
 }
-
-class Chunk
-{
-    constructor(lod, x, y)
-    {
-        this.lod = lod;
-        this.x = x;
-        this.y = y;
-    }
-    
-    get str()
-    {
-        GetChunkStr(lod, x, y);
-    }
-}
-
-var lodChunks = [[],[],[],[]];
 
 
 // p5js callbacks
@@ -58,12 +36,9 @@ function draw()
     for(let lod = 0; lod < lodChunkSizes.length; ++lod)
     {
         let mouseOff = lodChunkSizes[lod]/2;
-        DrawChunkRect(lod, GetChunkCoord(lod, mouseX - mouseOff, mouseY - mouseOff));
+        let originChunkCoord = GetChunkCoord(lod, mouseX - mouseOff, mouseY - mouseOff);
         
-        // for(let xOff = 0; xOff < lodDistances[lod] - 1; ++xOff)
-        // {
-            
-        // }
+        DrawChunkRect(lod,  originChunkCoord.x + lodStarts[lod], originChunkCoord.y);
     }
 }
 
@@ -106,27 +81,27 @@ function GetChunkCoord(lod, pixelX, pixelY)
     // return "" + coord.x + "," + coord.y;
 // }
 
-function DrawChunkRect(lod, lodCoord)
-{
-    rect
-    (
-        0.5 + lodCoord.x * lodChunkSizes[lod], 
-        0.5 + lodCoord.y * lodChunkSizes[lod], 
-        lodChunkSizes[lod], 
-        lodChunkSizes[lod]
-    );
-}
-
-// function DrawChunkRect(lod, currLodX, currLodY)
+// function DrawChunkRect(lod, lodCoord)
 // {
     // rect
     // (
-        // 0.5 + currLodX * lodChunkSizes[lod], 
-        // 0.5 + currLodY * lodChunkSizes[lod], 
+        // 0.5 + lodCoord.x * lodChunkSizes[lod], 
+        // 0.5 + lodCoord.y * lodChunkSizes[lod], 
         // lodChunkSizes[lod], 
         // lodChunkSizes[lod]
     // );
 // }
+
+function DrawChunkRect(lod, currLodX, currLodY)
+{
+    rect
+    (
+        0.5 + currLodX * lodChunkSizes[lod], 
+        0.5 + currLodY * lodChunkSizes[lod], 
+        lodChunkSizes[lod], 
+        lodChunkSizes[lod]
+    );
+}
 
 // function GetChunk0Coord(lod, lodX, lodY)
 // {
