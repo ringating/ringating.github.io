@@ -64,7 +64,6 @@ function draw()
                 j + containingBiggestChunk.y
             );
             
-            //let distance = GetDistanceBetweenChunks(0, containingSmallestChunk, biggestLoD, coord);
             let distance = GetDistanceToChunkFromMouse(biggestLoD, coord);
             
             if(distance <= lodCutoffs[biggestLoD])
@@ -74,9 +73,29 @@ function draw()
         }
     }
     
-    for(let i = 0; i < chunkArr[biggestLoD].length; ++i)
+    // subdivide big chunks into smaller ones
+    for(let lod = lodChunkSizes.length - 2; lod >= 0; --lod)
     {
-        DrawChunkRect(biggestLoD, chunkArr[biggestLoD][i]);
+        for(let i = chunkArr[lod+1].length-1; i >= 0; --i) // traverse chunks backwards so you can remove the ones that get subdivided
+        {
+            //var bigChunkCenter = GetCenterOfChunk(lod+1, chunkArr[lod+1][i]);
+            
+            if(GetDistanceToChunkFromMouse(lod+1, chunkArr[lod+1][i]) < lodCutoffs[lod])
+            {
+                var subdivided = Subdivide(lod+1, chunkArr[lod+1][i]);
+                chunkArr[lod] = chunkArr[lod].concat(subdivided);
+                chunkArr[lod+1].splice(i, 1);
+            }
+        }
+    }
+    
+    // draw all of the chunks
+    for(let lod = 0; lod < lodChunkSizes.length; ++lod)
+    {
+        for(let i = 0; i < chunkArr[lod].length; ++i)
+        {
+            DrawChunkRect(lod, chunkArr[lod][i]);
+        }
     }
 }
 
@@ -118,23 +137,34 @@ function ConvertToChunkUnits(lod, pixels)
     return Math.round(pixels/lodChunkSizes[lod]);
 }
 
-function GetCenterOfChunk(lod, lodX, lodY)
+function GetCenterOfChunk(lod, chunkCoord)
 {
     return new Coord(
-        lodX * lodChunkSizes[lod] + lodChunkSizes[lod]/2,
-        lodY * lodChunkSizes[lod] + lodChunkSizes[lod]/2
+        chunkCoord.x * lodChunkSizes[lod] + lodChunkSizes[lod]/2,
+        chunkCoord.y * lodChunkSizes[lod] + lodChunkSizes[lod]/2
     );
 }
 
-function GetDistanceBetweenChunks(lodA, coordA, lodB, coordB)
-{
-    let pixelA = GetCenterOfChunk(lodA, coordA.x, coordA.y);
-    let pixelB = GetCenterOfChunk(lodB, coordB.x, coordB.y);
-    return Math.hypot(pixelA.x - pixelB.x, pixelA.y - pixelB.y);
-}
+// function GetDistanceBetweenChunks(lodA, coordA, lodB, coordB)
+// {
+    // let pixelA = GetCenterOfChunk(lodA, coordA);
+    // let pixelB = GetCenterOfChunk(lodB, coordB);
+    // return Math.hypot(pixelA.x - pixelB.x, pixelA.y - pixelB.y);
+// }
 
 function GetDistanceToChunkFromMouse(lod, chunkCoord)
 {
-    let chunkCenterPixel = GetCenterOfChunk(lod, chunkCoord.x, chunkCoord.y);
+    let chunkCenterPixel = GetCenterOfChunk(lod, chunkCoord);
     return Math.hypot(chunkCenterPixel.x - mouseX, chunkCenterPixel.y - mouseY);
+}
+
+function Subdivide(lod, coord) // returns an Array of the 4 smaller chunks that the chunk subdivides into
+{
+    var topLeft = new Coord(coord.x * 2, coord.y * 2);
+    
+    var b = new Coord(topLeft.x + 1, topLeft.y    );
+    var c = new Coord(topLeft.x    , topLeft.y + 1);
+    var d = new Coord(topLeft.x + 1, topLeft.y + 1);
+    
+    return [topLeft, b, c, d];
 }
