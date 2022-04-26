@@ -3,7 +3,7 @@ const chunk0Length = 10;
 var lodChunkSizes = [chunk0Length, chunk0Length*2, chunk0Length*4, chunk0Length*8]; // pixels, each size up is double the prior
 //var lodChunkCounts = [2, 2, 2, 2]; // # of each lod's chunks to draw. must be even.
 
-var lodCutoffs = [50, 100, 200, 300]; // in pixels
+var lodCutoffs = [40, 100, 220, 300]; // in pixels
 
 var canvasLength = 800;
 
